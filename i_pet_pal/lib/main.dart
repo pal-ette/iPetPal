@@ -5,9 +5,33 @@ import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:ui' as ui;
+import 'dart:math';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
+}
+
+enum ImageLabel {
+  apple("Apple", "apple.png"),
+  bird("Bird", "bird.png"),
+  bridge("Bridge", "bridge.png"),
+  cat("Cat", "cat.png"),
+  cello("Cello", "cello.png"),
+  cheetah("Cheetah", "cheetah.png"),
+  coffee("Coffee", "coffee.png"),
+  dog("Dog", "dog.png"),
+  flower("Flower", "flower.png"),
+  lighthouse("Lighthouse", "lighthouse.png"),
+  mushroom("Mushroom", "mushroom.png"),
+  piano("Piano", "piano.png"),
+  sailboat("Sailboat", "sailboat.png"),
+  whale("Whale", "whale.png"),
+  bluetit("Bluetit", "bluetit.jpg");
+
+  const ImageLabel(this.label, this.path);
+  final String label;
+  final String path;
 }
 
 class MyApp extends StatelessWidget {
@@ -61,7 +85,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ui.Image? image;
+  String? selectedImagePath;
+  List<(Future<String>, double)> inferenceResult = List.empty();
+  Duration? inferenceTime;
 
   void _inference() {
     _inferenceResnet50();
@@ -104,10 +130,44 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset('assets/cat.png'),
-            RawImage(
-              image: image,
-            )
+            DropdownMenu<ImageLabel>(
+              initialSelection: ImageLabel.cat,
+              onSelected: (value) {
+                if (value == null) {
+                  return;
+                }
+                final path = value.path;
+                setState(() {
+                  selectedImagePath = 'assets/$path';
+                });
+              },
+              dropdownMenuEntries: ImageLabel.values
+                  .map<DropdownMenuEntry<ImageLabel>>((ImageLabel image) {
+                return DropdownMenuEntry<ImageLabel>(
+                  value: image,
+                  label: image.label,
+                );
+              }).toList(),
+            ),
+            if (selectedImagePath != null) Image.asset(selectedImagePath!),
+            for (var inference in inferenceResult)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FutureBuilder(
+                    future: inference.$1,
+                    builder: (context, snapshot) => Text(snapshot.data!),
+                  ),
+                  Slider(
+                    onChanged: null,
+                    value: inference.$2,
+                  ),
+                  Text("${(inference.$2 * 100).toStringAsFixed(2)}%"),
+                ],
+              ),
+            if (inferenceTime != null)
+              Text(
+                  "Inference Time: ${inferenceTime!.inMilliseconds.toString()} ms")
           ],
         ),
       ),
@@ -120,28 +180,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _inferenceResnet50() async {
+    final stopwatch = Stopwatch()..start();
     OrtEnv.instance.init();
     final sessionOptions = OrtSessionOptions();
     // You can also try pointilism-9.ort and rain-princess.ort
     final rawAssetFile =
-        await rootBundle.load("assets/models/resnet50-v1-12.onnx");
+        await rootBundle.load("assets/models/resnet50-v2-7.onnx");
     // await rootBundle.load("assets/models/resnet-preproc-v1-18.onnx");
     final bytes = rawAssetFile.buffer.asUint8List();
     final session = OrtSession.fromBuffer(bytes, sessionOptions);
     final runOptions = OrtRunOptions();
 
     // You can also try red.png, redgreen.png, redgreenblueblack.png for easy debug
-    ByteData blissBytes = await rootBundle.load('assets/cat.png');
+    ByteData blissBytes = await rootBundle.load(selectedImagePath!);
     final image = await decodeImageFromList(Uint8List.sublistView(blissBytes));
     final rgbFloats = await imageToFloatTensor(image);
-    print(rgbFloats);
     final inputOrt = OrtValueTensor.createTensorWithDataList(
         Float32List.fromList(rgbFloats), [1, 3, 224, 224]);
-
-    final regenImage = await floatTensorToImage(rgbFloats);
-    setState(() {
-      this.image = regenImage;
-    });
 
     final inputs = {'data': inputOrt};
     final outputs = session.run(runOptions, inputs);
@@ -151,15 +206,39 @@ class _MyHomePageState extends State<MyHomePage> {
     // session.release();
     OrtEnv.instance.release();
     List outFloats = outputs[0]?.value as List;
+    stopwatch.stop();
 
-    for (int i = 0; i < outFloats[0].length; ++i) {}
-    print(outFloats[0][283]);
-    print(argmax(outFloats[0]));
+    setState(() {
+      inferenceResult = getImagenet(softmax(outFloats[0]));
+      inferenceTime = stopwatch.elapsed;
+    });
+  }
+
+  List<double> softmax(List<double> list) {
+    final C = list.reduce(max);
+    final d = list.map((y) => exp(y - C)).reduce((a, b) => a + b);
+    return list.map((value) {
+      return exp(value - C) / d;
+    }).toList();
+  }
+
+  List<(Future<String>, double)> getImagenet(List<double> list) {
+    final targetList = list.indexed.toList();
+    targetList.sort((lValue, rValue) => rValue.$2.compareTo(lValue.$2));
+    return targetList.sublist(0, 5).map((e) => (getLabel(e.$1), e.$2)).toList();
+  }
+
+  Future<String> getLabel(int index) async {
+    final contents = await rootBundle.loadString("assets/synset.txt");
+
+    return LineSplitter.split(contents)
+        .map((line) => line.split(",")[0])
+        .toList()[index];
   }
 
   int argmax(List<double> list) {
     int outMaxIndex = -1;
-    double? maxValue = null;
+    double? maxValue;
 
     for (int i = 0; i < list.length; i++) {
       if (maxValue != null && list[i] <= maxValue) {
@@ -167,9 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       maxValue = list[i];
       outMaxIndex = i;
-      print('${i} & ${maxValue}');
     }
-    print(maxValue);
     return outMaxIndex;
   }
 
@@ -177,50 +254,26 @@ class _MyHomePageState extends State<MyHomePage> {
     final imageAsFloatBytes =
         (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
     final rgbaUints = Uint8List.view(imageAsFloatBytes.buffer);
-
     final indexed = rgbaUints.indexed;
     return [
-      ...indexed.where((e) => [0, 1, 2].contains(e.$1 % 4)).map((e) {
+      ...indexed.where((e) => e.$1 % 4 == 0).map((e) {
         var processed = e.$2.toDouble() / 255.0;
-        if (e.$1 == 0) {
-          processed = processed - 0.485;
-          processed = processed / 0.229;
-        }
-        if (e.$1 == 1) {
-          processed = processed - 0.456;
-          processed = processed / 0.224;
-        }
-        if (e.$1 == 2) {
-          processed = processed - 0.406;
-          processed = processed / 0.225;
-        }
+        processed = processed - 0.485;
+        processed = processed / 0.229;
+        return processed;
+      }),
+      ...indexed.where((e) => e.$1 % 4 == 1).map((e) {
+        var processed = e.$2.toDouble() / 255.0;
+        processed = processed - 0.456;
+        processed = processed / 0.224;
+        return processed;
+      }),
+      ...indexed.where((e) => e.$1 % 4 == 2).map((e) {
+        var processed = e.$2.toDouble() / 255.0;
+        processed = processed - 0.406;
+        processed = processed / 0.225;
         return processed;
       }),
     ];
-  }
-
-  Future<ui.Image> floatTensorToImage(List tensorData) {
-    print(tensorData.length);
-    final outRgbaFloats = Uint8List(4 * 224 * 224);
-    for (int x = 0; x < 224; x++) {
-      for (int y = 0; y < 224; y++) {
-        final index = x * 224 * 4 + y * 4;
-        final baseIndex = x * 224 * 3 + y * 3;
-        outRgbaFloats[index + 0] =
-            (tensorData[baseIndex + 0] * 255).toInt(); // r
-        outRgbaFloats[index + 1] =
-            (tensorData[baseIndex + 1] * 255).toInt(); // g
-        outRgbaFloats[index + 2] =
-            (tensorData[baseIndex + 2] * 255).toInt(); // b
-        outRgbaFloats[index + 3] = 255; // a
-      }
-    }
-    final completer = Completer<ui.Image>();
-    ui.decodeImageFromPixels(outRgbaFloats, 224, 224, ui.PixelFormat.rgba8888,
-        (ui.Image image) {
-      completer.complete(image);
-    });
-
-    return completer.future;
   }
 }
