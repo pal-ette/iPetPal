@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:onnxruntime/onnxruntime.dart';
+import 'dart:typed_data';
+
+import 'package:flutter/services.dart';
+import 'dart:async';
+import 'dart:ui' as ui;
 
 void main() {
   runApp(const MyApp());
@@ -55,17 +61,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  ui.Image? image;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  void _inference() {
+    _inferenceResnet50();
   }
 
   @override
@@ -105,21 +104,123 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Image.asset('assets/cat.png'),
+            RawImage(
+              image: image,
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _inference,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _inferenceResnet50() async {
+    OrtEnv.instance.init();
+    final sessionOptions = OrtSessionOptions();
+    // You can also try pointilism-9.ort and rain-princess.ort
+    final rawAssetFile =
+        await rootBundle.load("assets/models/resnet50-v1-12.onnx");
+    // await rootBundle.load("assets/models/resnet-preproc-v1-18.onnx");
+    final bytes = rawAssetFile.buffer.asUint8List();
+    final session = OrtSession.fromBuffer(bytes, sessionOptions);
+    final runOptions = OrtRunOptions();
+
+    // You can also try red.png, redgreen.png, redgreenblueblack.png for easy debug
+    ByteData blissBytes = await rootBundle.load('assets/cat.png');
+    final image = await decodeImageFromList(Uint8List.sublistView(blissBytes));
+    final rgbFloats = await imageToFloatTensor(image);
+    print(rgbFloats);
+    final inputOrt = OrtValueTensor.createTensorWithDataList(
+        Float32List.fromList(rgbFloats), [1, 3, 224, 224]);
+
+    final regenImage = await floatTensorToImage(rgbFloats);
+    setState(() {
+      this.image = regenImage;
+    });
+
+    final inputs = {'data': inputOrt};
+    final outputs = session.run(runOptions, inputs);
+    inputOrt.release();
+    runOptions.release();
+    sessionOptions.release();
+    // session.release();
+    OrtEnv.instance.release();
+    List outFloats = outputs[0]?.value as List;
+
+    for (int i = 0; i < outFloats[0].length; ++i) {}
+    print(outFloats[0][283]);
+    print(argmax(outFloats[0]));
+  }
+
+  int argmax(List<double> list) {
+    int outMaxIndex = -1;
+    double? maxValue = null;
+
+    for (int i = 0; i < list.length; i++) {
+      if (maxValue != null && list[i] <= maxValue) {
+        continue;
+      }
+      maxValue = list[i];
+      outMaxIndex = i;
+      print('${i} & ${maxValue}');
+    }
+    print(maxValue);
+    return outMaxIndex;
+  }
+
+  Future<List<double>> imageToFloatTensor(ui.Image image) async {
+    final imageAsFloatBytes =
+        (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+    final rgbaUints = Uint8List.view(imageAsFloatBytes.buffer);
+
+    final indexed = rgbaUints.indexed;
+    return [
+      ...indexed.where((e) => [0, 1, 2].contains(e.$1 % 4)).map((e) {
+        var processed = e.$2.toDouble() / 255.0;
+        if (e.$1 == 0) {
+          processed = processed - 0.485;
+          processed = processed / 0.229;
+        }
+        if (e.$1 == 1) {
+          processed = processed - 0.456;
+          processed = processed / 0.224;
+        }
+        if (e.$1 == 2) {
+          processed = processed - 0.406;
+          processed = processed / 0.225;
+        }
+        return processed;
+      }),
+    ];
+  }
+
+  Future<ui.Image> floatTensorToImage(List tensorData) {
+    print(tensorData.length);
+    final outRgbaFloats = Uint8List(4 * 224 * 224);
+    for (int x = 0; x < 224; x++) {
+      for (int y = 0; y < 224; y++) {
+        final index = x * 224 * 4 + y * 4;
+        final baseIndex = x * 224 * 3 + y * 3;
+        outRgbaFloats[index + 0] =
+            (tensorData[baseIndex + 0] * 255).toInt(); // r
+        outRgbaFloats[index + 1] =
+            (tensorData[baseIndex + 1] * 255).toInt(); // g
+        outRgbaFloats[index + 2] =
+            (tensorData[baseIndex + 2] * 255).toInt(); // b
+        outRgbaFloats[index + 3] = 255; // a
+      }
+    }
+    final completer = Completer<ui.Image>();
+    ui.decodeImageFromPixels(outRgbaFloats, 224, 224, ui.PixelFormat.rgba8888,
+        (ui.Image image) {
+      completer.complete(image);
+    });
+
+    return completer.future;
   }
 }
