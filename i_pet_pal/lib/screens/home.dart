@@ -13,7 +13,25 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 1,
+        title: const Row(
+          children: [
+            Icon(
+              Icons.pets,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'iPetPal',
+              style: TextStyle(
+                fontSize: 24,
+              ),
+            )
+          ],
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentPageIndex,
         onDestinationSelected: (int index) {
