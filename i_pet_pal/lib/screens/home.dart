@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_pet_pal/screens/photo_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -51,7 +52,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: const <Widget>[
-        const Text("1"),
+        PhotoScreen(),
         const Text("2"),
       ][currentPageIndex],
     );
