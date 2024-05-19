@@ -61,7 +61,8 @@ class Resnet50 {
   }
 
   Future<String> getLabel(int index) async {
-    final contents = await rootBundle.loadString("assets/synset.txt");
+    final contents =
+        await rootBundle.loadString("assets/models/resnet50_imagenet.txt");
 
     return LineSplitter.split(contents)
         .map((line) => line.split(",")[0])
