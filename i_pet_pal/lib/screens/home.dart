@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:i_pet_pal/screens/photo_screen.dart';
+import 'package:i_pet_pal/screens/examine_screen.dart';
+import 'package:i_pet_pal/screens/setting_screen.dart';
+import 'package:i_pet_pal/screens/info_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,52 +11,33 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
+
+  final List<Widget> pages = <Widget>[
+    const InfoScreen(),
+    const ExamineScreen(),
+    const SettingScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        title: const Row(
-          children: [
-            Icon(
-              Icons.pets,
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Text(
-              'iPetPal',
-              style: TextStyle(
-                fontSize: 24,
-              ),
-            )
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.info), label: "정보"),
+            BottomNavigationBarItem(icon: Icon(Icons.loupe), label: "검사"),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
           ],
+          currentIndex: currentPageIndex,
+          onTap: (value) => setState(() {
+            currentPageIndex = value;
+          }),
         ),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentPageIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.camera),
-            label: "Photo",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_month),
-            label: "History",
-          )
-        ],
-      ),
-      body: const <Widget>[
-        PhotoScreen(),
-        const Text("2"),
-      ][currentPageIndex],
-    );
+        body: Navigator(
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(
+                builder: (context) => pages[currentPageIndex]);
+          },
+        ));
   }
 }
