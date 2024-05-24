@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:i_pet_pal/screens/photo_screen.dart';
+import 'package:i_pet_pal/screens/setting_screen.dart';
+import 'package:i_pet_pal/screens/info_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -41,18 +43,23 @@ class _HomeState extends State<Home> {
         },
         destinations: const <Widget>[
           NavigationDestination(
-            icon: Icon(Icons.camera),
-            label: "Photo",
+            icon: Icon(Icons.loupe),
+            label: "검사",
           ),
           NavigationDestination(
-            icon: Icon(Icons.calendar_month),
-            label: "History",
-          )
+            icon: Icon(Icons.settings),
+            label: "설정",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.info),
+            label: "만든이",
+          ),
         ],
       ),
       body: const <Widget>[
         PhotoScreen(),
-        Text("2"),
+        SettingScreen(),
+        InfoScreen(),
       ][currentPageIndex],
     );
   }
