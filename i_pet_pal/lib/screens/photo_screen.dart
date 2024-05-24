@@ -95,7 +95,12 @@ class _PhotoScreenState extends State<PhotoScreen> {
             children: [
               FutureBuilder(
                 future: inference.$1,
-                builder: (context, snapshot) => Text(snapshot.data!),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
+                  return Text(snapshot.data!);
+                },
               ),
               Slider(
                 onChanged: null,
