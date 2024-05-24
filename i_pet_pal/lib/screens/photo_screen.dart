@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:i_pet_pal/models/resnet50.dart';
+import 'package:i_pet_pal/models/skin_eye.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PhotoScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class PhotoScreen extends StatefulWidget {
 class _PhotoScreenState extends State<PhotoScreen> {
   XFile? _image;
   final ImagePicker picker = ImagePicker();
-  final Resnet50 resnet = Resnet50();
+  final SkinEyeClassification skinEyeClassification = SkinEyeClassification();
 
   List<(Future<String>, double)> inferenceResult = [];
 
@@ -79,7 +79,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 if (_image == null) {
                   return;
                 }
-                final result = await resnet.inference(_image!.readAsBytes());
+                final result = await skinEyeClassification
+                    .inference(_image!.readAsBytes());
                 setState(() {
                   inferenceResult = result;
                 });
