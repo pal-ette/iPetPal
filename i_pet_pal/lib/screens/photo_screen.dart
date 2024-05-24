@@ -42,7 +42,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   Widget _buildPhotoArea() {
     return _image != null
-        ? Container(
+        ? SizedBox(
             width: 300,
             height: 300,
             child: Image.file(File(_image!.path)),

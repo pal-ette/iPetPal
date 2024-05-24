@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
       ),
       body: const <Widget>[
         PhotoScreen(),
-        const Text("2"),
+        Text("2"),
       ][currentPageIndex],
     );
   }
