@@ -16,7 +16,6 @@ class Resnet50 {
     // You can also try pointilism-9.ort and rain-princess.ort
     final rawAssetFile =
         await rootBundle.load("assets/models/resnet50-v2-7.onnx");
-    // await rootBundle.load("assets/models/resnet-preproc-v1-18.onnx");
     final bytes = rawAssetFile.buffer.asUint8List();
     final session = OrtSession.fromBuffer(bytes, sessionOptions);
     final runOptions = OrtRunOptions();
@@ -61,8 +60,7 @@ class Resnet50 {
   }
 
   Future<String> getLabel(int index) async {
-    final contents =
-        await rootBundle.loadString("assets/models/resnet50_imagenet.txt");
+    final contents = await rootBundle.loadString("assets/labels/imagenet.txt");
 
     return LineSplitter.split(contents)
         .map((line) => line.split(",")[0])
