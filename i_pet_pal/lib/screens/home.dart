@@ -57,7 +57,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: const <Widget>[
-        PhotoScreen(),
+        ExamineScreen(),
         SettingScreen(),
         InfoScreen(),
       ][currentPageIndex],

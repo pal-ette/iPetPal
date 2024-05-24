@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:i_pet_pal/models/skin_eye.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PhotoScreen extends StatefulWidget {
-  const PhotoScreen({super.key});
+class ExamineScreen extends StatefulWidget {
+  const ExamineScreen({super.key});
 
   @override
-  State<PhotoScreen> createState() => _PhotoScreenState();
+  State<ExamineScreen> createState() => _ExamineScreenState();
 }
 
-class _PhotoScreenState extends State<PhotoScreen> {
+class _ExamineScreenState extends State<ExamineScreen> {
   XFile? _image;
   final ImagePicker picker = ImagePicker();
   final SkinEyeClassification skinEyeClassification = SkinEyeClassification();
