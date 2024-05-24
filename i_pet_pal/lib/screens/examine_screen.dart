@@ -1,115 +1,32 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:i_pet_pal/models/skin_eye.dart';
-import 'package:image_picker/image_picker.dart';
+import 'examine_screen/select_image.dart';
 
-class ExamineScreen extends StatefulWidget {
+class ExamineScreen extends StatelessWidget {
   const ExamineScreen({super.key});
 
-  @override
-  State<ExamineScreen> createState() => _ExamineScreenState();
-}
-
-class _ExamineScreenState extends State<ExamineScreen> {
-  XFile? _image;
-  final ImagePicker picker = ImagePicker();
-  final SkinEyeClassification skinEyeClassification = SkinEyeClassification();
-
-  List<(Future<String>, double)> inferenceResult = [];
-
-  void setImage(ImageSource imageSource) async {
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile == null) {
-      return;
-    }
-    setState(() {
-      _image = XFile(pickedFile.path);
-    });
-  }
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const SizedBox(height: 30, width: double.infinity),
-        _buildPhotoArea(),
-        const SizedBox(height: 20),
-        _buildButton(),
-      ],
-    );
-  }
-
-  Widget _buildPhotoArea() {
-    return _image != null
-        ? SizedBox(
-            width: 300,
-            height: 300,
-            child: Image.file(File(_image!.path)),
-          )
-        : Container(
-            width: 300,
-            height: 300,
-            color: Colors.grey,
-          );
-  }
-
-  Widget _buildButton() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Row(
           children: [
-            ElevatedButton(
-              onPressed: () {
-                setImage(ImageSource.camera);
-              },
-              child: const Text("카메라"),
+            Icon(
+              Icons.pets,
             ),
-            const SizedBox(width: 30),
-            ElevatedButton(
-              onPressed: () {
-                setImage(ImageSource.gallery);
-              },
-              child: const Text("갤러리"),
+            SizedBox(
+              width: 5,
             ),
-            const SizedBox(width: 30),
-            ElevatedButton(
-              onPressed: () async {
-                if (_image == null) {
-                  return;
-                }
-                final result = await skinEyeClassification
-                    .inference(_image!.readAsBytes());
-                setState(() {
-                  inferenceResult = result;
-                });
-              },
-              child: const Text("분석"),
-            ),
+            Text(
+              'iPetPal',
+              style: TextStyle(
+                fontSize: 24,
+              ),
+            )
           ],
         ),
-        for (var inference in inferenceResult)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FutureBuilder(
-                future: inference.$1,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
-                  }
-                  return Text(snapshot.data!);
-                },
-              ),
-              Slider(
-                onChanged: null,
-                value: inference.$2,
-              ),
-              Text("${(inference.$2 * 100).toStringAsFixed(2)}%"),
-            ],
-          ),
-      ],
+      ),
+      body: const SelectImage(),
     );
   }
 }
