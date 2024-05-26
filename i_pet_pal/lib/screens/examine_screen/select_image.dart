@@ -31,31 +31,65 @@ class _SelectImageState extends State<SelectImage> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const SizedBox(height: 30, width: double.infinity),
-        const Text("반려동물 사진을 찍거나 사진첩에서 사진을 선택해주세요."),
-        const SizedBox(height: 20),
+        const Expanded(
+          child: Column(
+            children: [
+              Text(
+                "반려동물 사진을 찍거나 사진첩에서 사진을 선택해주세요.",
+                style: TextStyle(
+                  fontSize: 40,
+                ),
+              ),
+            ],
+          ),
+        ),
         _buildButton(context),
+        SizedBox(
+          height: 30,
+        )
       ],
     );
   }
 
   Widget _buildButton(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        ElevatedButton(
-          onPressed: () {
-            setImage(context, ImageSource.camera);
-          },
-          child: const Text("카메라"),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () {
+              setImage(context, ImageSource.camera);
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(60),
+            ),
+            child: const Column(
+              children: [
+                Icon(Icons.camera),
+                Text("카메라"),
+              ],
+            ),
+          ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            setImage(context, ImageSource.gallery);
-          },
-          child: const Text("갤러리"),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: () {
+              setImage(context, ImageSource.gallery);
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(60),
+            ),
+            child: const Column(
+              children: [
+                Icon(Icons.photo),
+                Text("갤러리"),
+              ],
+            ),
+          ),
         ),
       ],
     );

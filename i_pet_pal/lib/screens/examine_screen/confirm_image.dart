@@ -38,54 +38,98 @@ class _ConfirmImageState extends State<ConfirmImage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
+            flex: 4,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Image.file(File(widget.selectedImage.path)),
+                )
+              ],
+            ),
+          ),
+          Expanded(
             flex: 1,
-            child: Image.file(File(widget.selectedImage.path)),
-          ),
-          FutureBuilder(
-            future: skinEyeResult,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const CircularProgressIndicator();
-              }
-              var inferenceTop = snapshot.data![0].$1;
-              return FutureBuilder(
-                future: inferenceTop,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
-                  }
-                  return Text("${snapshot.data} 사진이 맞나요?");
-                },
-              );
-            },
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text("네"),
-              ),
-              const SizedBox(
-                width: 30,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Inference(
-                        selectedImage: widget.selectedImage,
-                        inferenceType: InferenceType.eye,
-                      ),
-                    ),
+            child: FutureBuilder(
+              future: skinEyeResult,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Column(
+                    children: [
+                      CircularProgressIndicator(),
+                    ],
                   );
-                },
-                child: const Text("아니오"),
-              )
-            ],
+                }
+                var inferenceTop = snapshot.data![0].$1;
+                return FutureBuilder(
+                  future: inferenceTop,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Column(
+                        children: [
+                          CircularProgressIndicator(),
+                        ],
+                      );
+                    }
+                    final InferenceType inferenceType = snapshot.data == "eye"
+                        ? InferenceType.eye
+                        : InferenceType.skin;
+
+                    return Column(
+                      children: [
+                        if (inferenceType == InferenceType.eye)
+                          const Text("눈 사진이 맞나요?"),
+                        if (inferenceType == InferenceType.skin)
+                          const Text("피부 사진이 맞나요?"),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  confirm(inferenceType);
+                                },
+                                child: const Text("네"),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 30,
+                            ),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  confirm(inferenceType);
+                                },
+                                child: const Text("아니오"),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  void confirm(InferenceType inferenceType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Inference(
+          selectedImage: widget.selectedImage,
+          inferenceType: inferenceType,
+        ),
       ),
     );
   }
