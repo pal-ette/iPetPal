@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:i_pet_pal/models/resnet50.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:i_pet_pal/models/skin_eye.dart';
 
 enum InferenceType {
   eye,
@@ -23,16 +23,16 @@ class Inference extends StatefulWidget {
 }
 
 class _InferenceState extends State<Inference> {
-  final SkinEyeClassification skinEyeClassification = SkinEyeClassification();
-  late Future<List<(Future<String>, double)>> skinEyeResult;
+  final Resnet50 deseaseClassification = Resnet50();
+  late Future<List<(Future<String>, double)>> deseaseResult;
 
   @override
   void initState() {
     super.initState();
 
     setState(() {
-      skinEyeResult =
-          skinEyeClassification.inference(widget.selectedImage.readAsBytes());
+      deseaseResult =
+          deseaseClassification.inference(widget.selectedImage.readAsBytes());
     });
   }
 
@@ -42,47 +42,63 @@ class _InferenceState extends State<Inference> {
       appBar: AppBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 400,
+          Expanded(
+            flex: 1,
             child: Image.file(
               File(widget.selectedImage.path),
             ),
           ),
           FutureBuilder(
-            future: skinEyeResult,
+            future: deseaseResult,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const CircularProgressIndicator();
+                return const Column(
+                  children: [
+                    CircularProgressIndicator(),
+                  ],
+                );
               }
-              var inferenceTop = snapshot.data![0].$1;
-              return FutureBuilder(
-                future: inferenceTop,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
-                  }
-                  return Text("${snapshot.data} 사진이 맞나요?");
-                },
+
+              return Column(
+                children: [
+                  for (var inference in snapshot.data!)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FutureBuilder(
+                          future: inference.$1,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CircularProgressIndicator();
+                            }
+                            return Text(snapshot.data!);
+                          },
+                        ),
+                        Slider(
+                          onChanged: null,
+                          value: inference.$2,
+                        ),
+                        Text("${(inference.$2 * 100).toStringAsFixed(2)}%"),
+                      ],
+                    ),
+                ],
               );
             },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text("네"),
-              ),
-              const SizedBox(
-                width: 30,
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text("아니오"),
-              )
-            ],
-          ),
+          // child: FutureBuilder(
+          //   future: deseaseResult,
+          //   builder: (context, snapshot) {
+          //     if (!snapshot.hasData) {
+          //       return const CircularProgressIndicator();
+          //     }
+
+          //     return Column(
+          //       children:
+          //     );
+          //   },
+          // ),
         ],
       ),
     );

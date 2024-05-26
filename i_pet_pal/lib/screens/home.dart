@@ -22,22 +22,36 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.info), label: "정보"),
-            BottomNavigationBarItem(icon: Icon(Icons.loupe), label: "검사"),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
+      appBar: AppBar(
+        title: const Row(
+          children: [
+            Icon(
+              Icons.pets,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'iPetPal',
+              style: TextStyle(
+                fontSize: 24,
+              ),
+            )
           ],
-          currentIndex: currentPageIndex,
-          onTap: (value) => setState(() {
-            currentPageIndex = value;
-          }),
         ),
-        body: Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-                builder: (context) => pages[currentPageIndex]);
-          },
-        ));
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: "정보"),
+          BottomNavigationBarItem(icon: Icon(Icons.loupe), label: "검사"),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
+        ],
+        currentIndex: currentPageIndex,
+        onTap: (value) => setState(() {
+          currentPageIndex = value;
+        }),
+      ),
+      body: pages[currentPageIndex],
+    );
   }
 }
