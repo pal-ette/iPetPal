@@ -39,21 +39,21 @@ class _SettingScreenState extends State<SettingScreen> {
             ],
           ),
           SettingsSection(
-            title: Text('계정'),
+            title: const Text('계정'),
             tiles: <SettingsTile>[
               SettingsTile.navigation(
-                leading: Icon(Icons.logout),
-                title: Text('로그아웃'),
+                leading: const Icon(Icons.logout),
+                title: const Text('로그아웃'),
                 onPressed: ((context) {}),
               ),
             ],
           ),
           SettingsSection(
-            title: Text('기타'),
+            title: const Text('기타'),
             tiles: <SettingsTile>[
               SettingsTile.navigation(
-                leading: Icon(Icons.star),
-                title: Text('앱 평가하기'),
+                leading: const Icon(Icons.star),
+                title: const Text('앱 평가하기'),
                 onPressed: ((context) {}),
               ),
             ],

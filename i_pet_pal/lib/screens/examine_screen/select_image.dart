@@ -46,7 +46,7 @@ class _SelectImageState extends State<SelectImage> {
           ),
         ),
         _buildButton(context),
-        SizedBox(
+        const SizedBox(
           height: 30,
         )
       ],
