@@ -5,11 +5,15 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 import 'package:onnxruntime/onnxruntime.dart';
+import 'package:i_pet_pal/env/env.dart';
 
 class TritonClient {
+  static const headers = {
+    "pal-ette-pass": Env.palEtteApiKey,
+  };
   static Future<bool> ping(String baseUrl) async {
     final url = Uri.parse("$baseUrl/health/ready");
-    final response = await http.get(url);
+    final response = await http.get(url, headers: headers);
     return response.statusCode == 200;
   }
 
@@ -45,19 +49,26 @@ class TritonClient {
         }
       ]
     };
-    return http.post(url, body: jsonEncode(body)).then(
-      (response) {
-        final responseBody = jsonDecode(response.body);
-        final result = List<(String, double)>.from(
-            responseBody["outputs"][0]["data"].map((data) {
-          final c = data.split(":");
-          return (c[2], double.parse(c[0]));
-        }));
-        final values = result.map((e) => e.$2);
-        final softmaxValues = softmax(values.toList());
-        return List<(String, double)>.generate(
-            5, (index) => (result[index].$1, softmaxValues[index]));
-      },
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    if (response.statusCode != 200) {
+      return List<(String, double)>.empty();
+    }
+
+    final responseBody = jsonDecode(response.body);
+    final result = List<(String, double)>.from(
+        responseBody["outputs"][0]["data"].map((data) {
+      final c = data.split(":");
+      return (c[2], double.parse(c[0]));
+    }));
+    final values = result.map((e) => e.$2);
+    final softmaxValues = softmax(values.toList());
+    return List<(String, double)>.generate(
+      5,
+      (index) => (result[index].$1, softmaxValues[index]),
     );
   }
 
