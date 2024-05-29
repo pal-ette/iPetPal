@@ -31,8 +31,11 @@ class _InferenceState extends State<Inference> {
     super.initState();
 
     setState(() {
-      deseaseResult = TritonClient.inference("https://nvidia.edens.one/v2",
-          "resnet50_onnx", widget.selectedImage.readAsBytes());
+      deseaseResult = TritonClient.inference(
+        "https://nvidia.edens.one/v2",
+        "resnet50_onnx",
+        widget.selectedImage.readAsBytes(),
+      );
     });
   }
 
