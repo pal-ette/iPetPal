@@ -8,7 +8,7 @@ except ModuleNotFoundError:
     import sys
 
     def install(package):
-        subprocess.check_all([sys.executable, "-m", "pip", "install", package])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
     install("sentence_transformers")
     from sentence_transformers import SentenceTransformer
@@ -32,7 +32,7 @@ class TritonPythonModel:
     def _process_request(self, request):
         in_0 = pb_utils.get_input_tensor_by_name(request, "INPUT0")
 
-        out_0 = self.model.encode(in_0.as_numpy()[0].deocde("utf-8"))
+        out_0 = self.model.encode(in_0.as_numpy()[0].decode("utf-8"))
 
         return pb_utils.InferenceResponse(
             output_tensors=[
