@@ -2,4 +2,4 @@
 
 BASEDIR=$(dirname "$0")
 
-for d in $BASEDIR/*/ ; do (cd "$d" && ./fetch.sh); done
+for d in $BASEDIR/*/fetch.sh ; do ($d); done
