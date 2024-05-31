@@ -44,7 +44,7 @@ output [
     dims: [ 1, 2 ]
   },
   {
-    name: "EYE082"
+    name: "EYE08"
     data_type: TYPE_FP32
     dims: [ 1, 2 ]
   },
@@ -66,7 +66,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -78,7 +78,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -90,7 +90,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -102,7 +102,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -114,7 +114,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -126,7 +126,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -138,7 +138,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -150,7 +150,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -162,7 +162,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
@@ -174,7 +174,7 @@ ensemble_scheduling {
       model_version: -1
       input_map {
         key: "input"
-        value: "input_ensemble"
+        value: "input"
       }
       output_map {
         key: "output"
