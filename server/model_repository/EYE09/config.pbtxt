@@ -2,7 +2,7 @@ platform: "onnxruntime_onnx"
 max_batch_size : 0
 input [
   {
-    name: "data"
+    name: "input"
     data_type: TYPE_FP32
     format: FORMAT_NCHW
     dims: [ 3, 224, 224 ]
@@ -11,10 +11,9 @@ input [
 ]
 output [
   {
-    name: "resnetv24_dense0_fwd"
+    name: "output"
     data_type: TYPE_FP32
-    dims: [ -1, 1000 ]
-    reshape { shape: [ -1, 1000 ] }
-    label_filename: "imagenet.txt"
+    dims: [ 1, 2 ]
+    label_filename: "label.txt"
   }
 ]

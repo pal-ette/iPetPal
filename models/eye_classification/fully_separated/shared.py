@@ -13,6 +13,23 @@ from torchvision.transforms import (
 )
 
 
+def desease_to_english(desease_name):
+    map = {
+        "결막염": "EYE01",
+        "궤양성각막질환": "EYE02",
+        "백내장": "EYE03",
+        "비궤양성각막질환": "EYE04",
+        "색소침착성각막염": "EYE05",
+        "안검내반증": "EYE06",
+        "안검염": "EYE07",
+        "안검종양": "EYE08",
+        "유루증": "EYE09",
+        "핵경화": "EYE10",
+    }
+
+    return map[desease_name]
+
+
 def load_dict(model, optimizer, dict_file):
     pretrained = torch.load(dict_file)
 

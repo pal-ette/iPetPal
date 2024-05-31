@@ -1,0 +1,185 @@
+platform: "ensemble"
+input [
+  {
+    name: "input"
+    data_type: TYPE_FP32
+    format: FORMAT_NCHW
+    dims: [ 3, 224, 224 ]
+  }
+]
+output [
+  {
+    name: "EYE01"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  },
+  {
+    name: "EYE02"
+    data_type: TYPE_FP32
+    dims: [ 1, 3 ]
+  },
+  {
+    name: "EYE03"
+    data_type: TYPE_FP32
+    dims: [ 1, 4 ]
+  },
+  {
+    name: "EYE04"
+    data_type: TYPE_FP32
+    dims: [ 1, 3 ]
+  },
+  {
+    name: "EYE05"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  },
+  {
+    name: "EYE06"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  },
+  {
+    name: "EYE07"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  },
+  {
+    name: "EYE082"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  },
+  {
+    name: "EYE09"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  },
+  {
+    name: "EYE10"
+    data_type: TYPE_FP32
+    dims: [ 1, 2 ]
+  }
+]
+ensemble_scheduling {
+  step [
+    {
+      model_name: "EYE01"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE01"
+      }
+    },
+    {
+      model_name: "EYE02"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE02"
+      }
+    },
+    {
+      model_name: "EYE03"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE03"
+      }
+    },
+    {
+      model_name: "EYE04"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE04"
+      }
+    },
+    {
+      model_name: "EYE05"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE05"
+      }
+    },
+    {
+      model_name: "EYE06"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE06"
+      }
+    },
+    {
+      model_name: "EYE07"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE07"
+      }
+    },
+    {
+      model_name: "EYE08"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE08"
+      }
+    },
+    {
+      model_name: "EYE09"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE09"
+      }
+    },
+    {
+      model_name: "EYE10"
+      model_version: -1
+      input_map {
+        key: "input"
+        value: "input_ensemble"
+      }
+      output_map {
+        key: "output"
+        value: "EYE10"
+      }
+    }
+  ]
+}
