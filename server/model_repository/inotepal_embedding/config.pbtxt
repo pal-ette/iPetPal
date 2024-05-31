@@ -1,4 +1,3 @@
-name: "inotepal_embedding"
 backend: "python"
 
 input [
