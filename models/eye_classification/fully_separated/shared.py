@@ -1,15 +1,15 @@
+import os
 import torch
 import timm
-import os
-import onnxruntime
-from scipy.special import softmax
-from PIL import Image
+import pickle
+import matplotlib.pyplot as plt
+from collections import OrderedDict
 from torchvision.transforms import (
-    Compose,
     ToTensor,
+    Normalize,
+    Compose,
     RandomHorizontalFlip,
     RandomVerticalFlip,
-    Normalize,
 )
 
 
@@ -66,6 +66,91 @@ def get_label(pt_path):
     out_labels = [line.strip() for line in label_file]
     label_file.close()
     return out_labels
+
+
+def calc_accuracy(X, Y):
+    max_vals, max_indices = torch.max(X, 1)
+    train_acc = (max_indices == Y).sum().data.cpu().numpy() / max_indices.size()[0]
+    return train_acc
+
+
+def save_checkpoint(
+    epoch,
+    labels,
+    model,
+    optimizer,
+    train_loss_epoch,
+    val_loss_epoch,
+    train_acc_epoch,
+    val_acc_epoch,
+    model_path,
+    filename,
+):
+
+    model_dict = OrderedDict([(k, v) for k, v in model.state_dict().items()])
+    state = {
+        "epoch": epoch,
+        "state_dict": model_dict,
+        "optimizer": optimizer.state_dict(),
+        "label": labels,
+    }
+    torch.save(state, os.path.join(model_path, f"{filename}.pt"))
+
+    config = {
+        "train": {"acc": train_acc_epoch, "loss": train_loss_epoch},
+        "valid": {"acc": val_acc_epoch, "loss": val_loss_epoch},
+    }
+
+    with open(os.path.join(model_path, f"{filename}.pickle"), "wb") as fw:
+        pickle.dump(config, fw)
+
+
+def load_records(pkl_file):
+    with open(pkl_file, "rb") as f:
+        records = pickle.load(f)
+    return records["train"], records["valid"]
+
+
+def loss_epoch_curve(
+    model_path,
+    filename,
+    train_loss_epoch,
+    val_loss_epoch,
+    train_acc_epoch,
+    val_acc_epoch,
+):
+    figure, ax = plt.subplots(1, 2, figsize=(12, 5))
+
+    ax[0].plot(train_loss_epoch)
+    ax[0].plot(val_loss_epoch)
+    ax[0].set_title("Loss-Epoch curve")
+    ax[0].set_ylabel("Loss")
+    ax[0].set_xlabel("Epoch")
+    ax[0].legend(["train", "val"], loc="upper right")
+
+    ax[1].plot(train_acc_epoch)
+    ax[1].plot(val_acc_epoch)
+    ax[1].set_title("Model Accuracy")
+    ax[1].set_ylabel("Accuracy")
+    ax[1].set_xlabel("Epoch")
+    ax[1].legend(["train", "val"], loc="lower right")
+
+    plt.savefig(os.path.join(model_path, f"{filename}.png"))
+
+
+def print_file_count(base_dir, depth=1, space=0):
+    if depth == 0:
+        return
+    for group in os.listdir(base_dir):
+        group_path = f"{base_dir}\\{group}"
+        print(
+            "- " * space,
+            group,
+            f" ({len(os.listdir(group_path))})" if os.path.isdir(group_path) else "",
+            sep="",
+        )
+        if os.path.isdir(group_path):
+            print_file_count(group_path, depth - 1, space + 1)
 
 
 transforms = Compose(
