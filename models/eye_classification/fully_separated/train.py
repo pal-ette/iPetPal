@@ -1,97 +1,18 @@
-from datasets import load_dataset
-
 import os
-import shutil
-import zipfile
-import pandas as pd
-from PIL import Image
-import numpy as np
-
-import matplotlib.pyplot as plt
-from PIL import Image, UnidentifiedImageError
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset
-from torchvision import datasets, transforms
-
-import timm
 import tqdm
-
-from collections import OrderedDict
-import pickle
-
-from shared import load_dict, transforms, get_model, get_optimizer
-
-
-def calc_accuracy(X, Y):
-    max_vals, max_indices = torch.max(X, 1)
-    train_acc = (max_indices == Y).sum().data.cpu().numpy() / max_indices.size()[0]
-    return train_acc
-
-
-def loss_epoch_curve(
-    model_path,
-    filename,
-    train_loss_epoch,
-    val_loss_epoch,
-    train_acc_epoch,
-    val_acc_epoch,
-):
-
-    figure, ax = plt.subplots(1, 2, figsize=(12, 5))
-
-    ax[0].plot(train_loss_epoch)
-    ax[0].plot(val_loss_epoch)
-    ax[0].set_title("Loss-Epoch curve")
-    ax[0].set_ylabel("Loss")
-    ax[0].set_xlabel("Epoch")
-    ax[0].legend(["train", "val"], loc="upper right")
-
-    ax[1].plot(train_acc_epoch)
-    ax[1].plot(val_acc_epoch)
-    ax[1].set_title("Model Accuracy")
-    ax[1].set_ylabel("Accuracy")
-    ax[1].set_xlabel("Epoch")
-    ax[1].legend(["train", "val"], loc="lower right")
-
-    plt.savefig(os.path.join(model_path, f"{filename}.png"))
-
-
-def save_checkpoint(
-    epoch,
-    labels,
-    model,
-    optimizer,
-    train_loss_epoch,
-    val_loss_epoch,
-    train_acc_epoch,
-    val_acc_epoch,
-    model_path,
-    filename,
-):
-
-    model_dict = OrderedDict([(k, v) for k, v in model.state_dict().items()])
-    state = {
-        "epoch": epoch,
-        "state_dict": model_dict,
-        "optimizer": optimizer.state_dict(),
-        "label": labels,
-    }
-    torch.save(state, os.path.join(model_path, f"{filename}.pt"))
-
-    config = {
-        "train": {"acc": train_acc_epoch, "loss": train_loss_epoch},
-        "valid": {"acc": val_acc_epoch, "loss": val_loss_epoch},
-    }
-
-    with open(os.path.join(model_path, f"{filename}.pickle"), "wb") as fw:
-        pickle.dump(config, fw)
-
-
-def load_records(pkl_file):
-    with open(pkl_file, "rb") as f:
-        records = pickle.load(f)
-    return records["train"], records["valid"]
+from torchvision import datasets, transforms
+from shared import (
+    load_dict,
+    transforms,
+    get_model,
+    get_optimizer,
+    loss_epoch_curve,
+    load_records,
+    calc_accuracy,
+    save_checkpoint,
+)
 
 
 if __name__ == "__main__":
@@ -107,7 +28,7 @@ if __name__ == "__main__":
         if not desease.endswith("_train"):
             continue
         print(desease, end=" / ")
-        desease_path = f"{base_path}\{desease}"
+        desease_path = f"{base_path}\\{desease}"
         desease_name = desease.replace("_train", "")
         dataset = datasets.ImageFolder(desease_path, transforms)
 
