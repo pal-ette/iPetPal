@@ -17,15 +17,10 @@ from torchvision import datasets, transforms
 import timm
 import tqdm
 
-from torchvision.transforms import (
-    Compose,
-    ToTensor,
-    RandomHorizontalFlip,
-    RandomVerticalFlip,
-)
-
 from collections import OrderedDict
 import pickle
+
+from shared import load_dict, transforms, get_model, get_optimizer
 
 
 def calc_accuracy(X, Y):
@@ -93,23 +88,6 @@ def save_checkpoint(
         pickle.dump(config, fw)
 
 
-def load_dict(model, optimizer, dict_file):
-    pretrained = torch.load(dict_file)
-
-    epoch = pretrained["epoch"]
-    state_dict = pretrained["state_dict"]
-    opt_dict = pretrained["optimizer"]
-    labels = pretrained["label"]
-
-    model_dict = model.state_dict()
-    model_dict.update(state_dict)
-    model.load_state_dict(model_dict)
-
-    optimizer.load_state_dict(opt_dict)
-
-    return epoch, labels, model, optimizer
-
-
 def load_records(pkl_file):
     with open(pkl_file, "rb") as f:
         records = pickle.load(f)
@@ -119,17 +97,11 @@ def load_records(pkl_file):
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    transforms = Compose(
-        [
-            ToTensor(),
-            RandomHorizontalFlip(),
-            RandomVerticalFlip(),
-        ]
-    )
-
     batch_size = 32
 
     base_path = "D:\CVProject\개_안구_resized_train_test"
+
+    base_model_name = "resnet50"
 
     for desease in os.listdir(base_path):
         if not desease.endswith("_train"):
@@ -145,7 +117,7 @@ if __name__ == "__main__":
         train_size = int(len(dataset) * 0.8)
         valid_size = len(dataset) - train_size
 
-        model = timm.create_model("resnet50", pretrained=True, num_classes=len(labels))
+        model = get_model(base_model_name, len(labels))
 
         train_dataset, valid_dataset = torch.utils.data.random_split(
             dataset, [train_size, valid_size]
@@ -163,9 +135,8 @@ if __name__ == "__main__":
 
         # training
 
-        optimizer = torch.optim.SGD(
-            model.parameters(), lr=0.01, weight_decay=1e-5, momentum=0.9
-        )
+        optimizer = get_optimizer(model)
+
         lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             optimizer, mode="min", factor=0.05, patience=2
         )
@@ -177,8 +148,6 @@ if __name__ == "__main__":
         with open(os.path.join(model_path, "label.txt"), "w", encoding="utf8") as file:
             file.write("\n".join(labels))
 
-        file_path = f"model/{desease_name}"
-        os.makedirs(file_path, exist_ok=True)
         num_epochs = 30
 
         best_val_acc, best_val_loss = 0.0, 100.0
@@ -190,8 +159,8 @@ if __name__ == "__main__":
         model = model.to(device)
 
         if False:
-            dict_file = os.path.join(file_path, f"{model_name}.pt")
-            pkl_file = os.path.join(file_path, f"v{model_name}.pickle")
+            dict_file = os.path.join(model_path, f"{model_name}.pt")
+            pkl_file = os.path.join(model_path, f"v{model_name}.pickle")
 
             epoch_start, labels, model, optimizer = load_dict(
                 model, optimizer, dict_file
@@ -266,12 +235,12 @@ if __name__ == "__main__":
                     train_acc_epoch,
                     val_acc_epoch,
                     model_path,
-                    "resnet50",
+                    base_model_name,
                 )
 
         loss_epoch_curve(
             model_path,
-            "resnet50",
+            base_model_name,
             train_loss_epoch,
             val_loss_epoch,
             train_acc_epoch,
