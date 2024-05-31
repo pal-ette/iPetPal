@@ -24,13 +24,13 @@ if __name__ == "__main__":
 
     base_model_name = "resnet50"
 
-    for desease in os.listdir(base_path):
-        if not desease.endswith("_train"):
+    for disease in os.listdir(base_path):
+        if not disease.endswith("_train"):
             continue
-        print(desease, end=" / ")
-        desease_path = f"{base_path}\\{desease}"
-        desease_name = desease.replace("_train", "")
-        dataset = datasets.ImageFolder(desease_path, transforms)
+        print(disease, end=" / ")
+        disease_path = f"{base_path}\\{disease}"
+        disease_name = disease.replace("_train", "")
+        dataset = datasets.ImageFolder(disease_path, transforms)
 
         labels = dataset.classes
         print(f"len(dataset): {len(dataset)}, labels: {dataset.classes}")
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         )
         loss_fn = nn.CrossEntropyLoss()
 
-        model_path = f"working/{desease_name}"
+        model_path = f"working/{disease_name}"
         os.makedirs(model_path, exist_ok=True)
 
         with open(os.path.join(model_path, "label.txt"), "w", encoding="utf8") as file:
