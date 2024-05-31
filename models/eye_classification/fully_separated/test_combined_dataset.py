@@ -25,30 +25,30 @@ if __name__ == "__main__":
 
     test_datas = []
     base_path = "D:\CVProject\개_안구_resized_train_test"
-    for desease in os.listdir(base_path):
-        if not desease.endswith("_test"):
+    for disease in os.listdir(base_path):
+        if not disease.endswith("_test"):
             continue
-        desease_name = desease.replace("_test", "")
-        labels = get_label(f"working\\{desease_name}\\")
+        disease_name = disease.replace("_test", "")
+        labels = get_label(f"working\\{disease_name}\\")
         if len(labels) > 2 or "무" not in labels or "유" not in labels:
             continue
         test_datas.extend(
             [
                 (path, labels.index(os.path.split(os.path.dirname(path))[1]))
-                for path in glob.glob(f"{base_path}\\{desease}\\*\\*")
+                for path in glob.glob(f"{base_path}\\{disease}\\*\\*")
             ]
         )
 
     print(f"len(test_data): {len(test_datas)}")
-    for desease in os.listdir(base_path):
-        if not desease.endswith("_test"):
+    for disease in os.listdir(base_path):
+        if not disease.endswith("_test"):
             continue
-        desease_name = desease.replace("_test", "")
-        labels = get_label(f"working\\{desease_name}\\")
+        disease_name = disease.replace("_test", "")
+        labels = get_label(f"working\\{disease_name}\\")
         if len(labels) > 2 or "무" not in labels or "유" not in labels:
             continue
 
-        for onnx_path in glob.glob(f"working\\{desease_name}\\*.onnx"):
+        for onnx_path in glob.glob(f"working\\{disease_name}\\*.onnx"):
             model_name = Path(onnx_path).stem
             onnx_model = onnx.load(onnx_path)
             onnx.checker.check_model(onnx_model)

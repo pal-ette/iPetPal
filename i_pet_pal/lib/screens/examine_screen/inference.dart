@@ -24,14 +24,14 @@ class Inference extends StatefulWidget {
 }
 
 class _InferenceState extends State<Inference> {
-  late Future<List<(String, double)>> deseaseResult;
+  late Future<List<(String, double)>> diseaseResult;
 
   @override
   void initState() {
     super.initState();
 
     setState(() {
-      deseaseResult = TritonClient.inference(
+      diseaseResult = TritonClient.inference(
         "https://nvidia.edens.one/v2",
         "resnet50_onnx",
         widget.selectedImage.readAsBytes(),
@@ -66,7 +66,7 @@ class _InferenceState extends State<Inference> {
                 ),
               ),
               FutureBuilder(
-                future: deseaseResult,
+                future: diseaseResult,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const CircularProgressIndicator();

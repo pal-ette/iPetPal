@@ -13,7 +13,7 @@ from torchvision.transforms import (
 )
 
 
-def desease_to_english(desease_name):
+def disease_to_english(disease_name):
     map = {
         "결막염": "EYE01",
         "궤양성각막질환": "EYE02",
@@ -27,7 +27,7 @@ def desease_to_english(desease_name):
         "핵경화": "EYE10",
     }
 
-    return map[desease_name]
+    return map[disease_name]
 
 
 def load_dict(model, optimizer, dict_file):
