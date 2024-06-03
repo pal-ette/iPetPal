@@ -5,7 +5,6 @@ import tqdm
 from torchvision import datasets, transforms
 from shared import (
     load_dict,
-    transforms,
     get_model,
     get_optimizer,
     loss_epoch_curve,
