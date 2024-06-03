@@ -9,21 +9,21 @@ enum InferenceType {
   skin,
 }
 
-class Inference extends StatefulWidget {
+class InferenceServerScreen extends StatefulWidget {
   final XFile selectedImage;
   final InferenceType inferenceType;
 
-  const Inference({
+  const InferenceServerScreen({
     super.key,
     required this.selectedImage,
     required this.inferenceType,
   });
 
   @override
-  State<Inference> createState() => _InferenceState();
+  State<InferenceServerScreen> createState() => _InferenceState();
 }
 
-class _InferenceState extends State<Inference> {
+class _InferenceState extends State<InferenceServerScreen> {
   late Future<List<(String, double)>> diseaseResult;
 
   @override
@@ -31,9 +31,15 @@ class _InferenceState extends State<Inference> {
     super.initState();
 
     setState(() {
+      late String apiPath;
+      if (widget.inferenceType == InferenceType.skin) {
+        apiPath = "";
+      } else if (widget.inferenceType == InferenceType.eye) {
+        apiPath = "";
+      }
       diseaseResult = TritonClient.inference(
         "https://nvidia.edens.one/v2",
-        "resnet50_onnx",
+        apiPath,
         widget.selectedImage.readAsBytes(),
       );
     });
