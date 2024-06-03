@@ -89,20 +89,14 @@ class SkinEyeClassification {
     return [
       ...indexed.where((e) => e.$1 % 4 == 0).map((e) {
         var processed = e.$2.toDouble() / 255.0;
-        processed = processed - 0.485;
-        processed = processed / 0.229;
         return processed;
       }),
       ...indexed.where((e) => e.$1 % 4 == 1).map((e) {
         var processed = e.$2.toDouble() / 255.0;
-        processed = processed - 0.456;
-        processed = processed / 0.224;
         return processed;
       }),
       ...indexed.where((e) => e.$1 % 4 == 2).map((e) {
         var processed = e.$2.toDouble() / 255.0;
-        processed = processed - 0.406;
-        processed = processed / 0.225;
         return processed;
       }),
     ];
