@@ -9,21 +9,21 @@ enum InferenceType {
   skin,
 }
 
-class Inference extends StatefulWidget {
+class InferenceServerScreen extends StatefulWidget {
   final XFile selectedImage;
   final InferenceType inferenceType;
 
-  const Inference({
+  const InferenceServerScreen({
     super.key,
     required this.selectedImage,
     required this.inferenceType,
   });
 
   @override
-  State<Inference> createState() => _InferenceState();
+  State<InferenceServerScreen> createState() => _InferenceState();
 }
 
-class _InferenceState extends State<Inference> {
+class _InferenceState extends State<InferenceServerScreen> {
   late Future<List<(String, double)>> diseaseResult;
 
   @override
@@ -31,9 +31,15 @@ class _InferenceState extends State<Inference> {
     super.initState();
 
     setState(() {
+      late String apiPath;
+      if (widget.inferenceType == InferenceType.skin) {
+        apiPath = "";
+      } else if (widget.inferenceType == InferenceType.eye) {
+        apiPath = "";
+      }
       diseaseResult = TritonClient.inference(
         "https://nvidia.edens.one/v2",
-        "resnet50_onnx",
+        apiPath,
         widget.selectedImage.readAsBytes(),
       );
     });
@@ -114,56 +120,63 @@ class _InferenceState extends State<Inference> {
                             ],
                           ),
                           Expanded(
-                            child: Column(children: [
-                              for (var inference in snapshot.data!)
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 30,
+                            child: Column(
+                              children: [
+                                for (var inference in snapshot.data!)
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 30,
+                                        ),
+                                        height: 30,
+                                        child: LinearProgressIndicator(
+                                          value: inference.$2,
+                                        ),
                                       ),
-                                      height: 30,
-                                      child: LinearProgressIndicator(
-                                        value: inference.$2,
-                                      ),
-                                    ),
-                                    Stack(
-                                      children: [
-                                        Text(
-                                          "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                          style: TextStyle(
-                                            foreground: Paint()
-                                              ..style = PaintingStyle.stroke
-                                              ..strokeWidth = 2
-                                              ..color = (inference.$2 > 0.5)
+                                      Stack(
+                                        children: [
+                                          Text(
+                                            "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                            style: TextStyle(
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 2
+                                                ..color = (inference.$2 > 0.5)
+                                                    ? Theme.of(context)
+                                                        .colorScheme
+                                                        .primary
+                                                    : Theme.of(context)
+                                                        .colorScheme
+                                                        .surfaceContainer,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                            style: TextStyle(
+                                              color: (inference.$2 > 0.5)
                                                   ? Theme.of(context)
                                                       .colorScheme
-                                                      .primary
+                                                      .onPrimary
                                                   : Theme.of(context)
                                                       .colorScheme
-                                                      .surfaceContainer,
+                                                      .onSurface,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                          style: TextStyle(
-                                            color: (inference.$2 > 0.5)
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                            ]),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context)
+                            .popUntil((route) => route.isFirst),
+                        child: const Text("처음으로 돌아가기"),
                       ),
                     ],
                   );

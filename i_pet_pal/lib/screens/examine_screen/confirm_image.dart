@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:i_pet_pal/screens/examine_screen/inference.dart';
+import 'package:i_pet_pal/screens/examine_screen/inference_device_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:i_pet_pal/models/skin_eye.dart';
 
@@ -126,7 +126,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Inference(
+        builder: (context) => InferenceDeviceScreen(
           selectedImage: widget.selectedImage,
           inferenceType: inferenceType,
         ),

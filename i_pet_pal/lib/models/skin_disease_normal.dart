@@ -7,7 +7,7 @@ import 'dart:ui' as ui;
 import 'dart:math';
 import 'dart:convert';
 
-class Resnet50 {
+class SkinDiseaseNormalClassification {
   Future<List<(Future<String>, double)>> inference(
       Future<Uint8List> imageFuture) async {
     final stopwatch = Stopwatch()..start();
@@ -15,7 +15,7 @@ class Resnet50 {
     final sessionOptions = OrtSessionOptions();
     // You can also try pointilism-9.ort and rain-princess.ort
     final rawAssetFile =
-        await rootBundle.load("assets/models/resnet50-v2-7.onnx");
+        await rootBundle.load("assets/models/skin_disease_normal.onnx");
     final bytes = rawAssetFile.buffer.asUint8List();
     final session = OrtSession.fromBuffer(bytes, sessionOptions);
     final runOptions = OrtRunOptions();
@@ -32,7 +32,7 @@ class Resnet50 {
     final inputOrt = OrtValueTensor.createTensorWithDataList(
         Float32List.fromList(rgbFloats), [1, 3, 224, 224]);
 
-    final inputs = {'data': inputOrt};
+    final inputs = {session.inputNames[0]: inputOrt};
     final outputs = session.run(runOptions, inputs);
     inputOrt.release();
     runOptions.release();
@@ -56,11 +56,12 @@ class Resnet50 {
   List<(Future<String>, double)> getImagenet(List<double> list) {
     final targetList = list.indexed.toList();
     targetList.sort((lValue, rValue) => rValue.$2.compareTo(lValue.$2));
-    return targetList.sublist(0, 5).map((e) => (getLabel(e.$1), e.$2)).toList();
+    return targetList.sublist(0, 2).map((e) => (getLabel(e.$1), e.$2)).toList();
   }
 
   Future<String> getLabel(int index) async {
-    final contents = await rootBundle.loadString("assets/labels/imagenet.txt");
+    final contents =
+        await rootBundle.loadString("assets/labels/skin_disease_normal.txt");
 
     return LineSplitter.split(contents)
         .map((line) => line.split(",")[0])
@@ -89,20 +90,14 @@ class Resnet50 {
     return [
       ...indexed.where((e) => e.$1 % 4 == 0).map((e) {
         var processed = e.$2.toDouble() / 255.0;
-        processed = processed - 0.485;
-        processed = processed / 0.229;
         return processed;
       }),
       ...indexed.where((e) => e.$1 % 4 == 1).map((e) {
         var processed = e.$2.toDouble() / 255.0;
-        processed = processed - 0.456;
-        processed = processed / 0.224;
         return processed;
       }),
       ...indexed.where((e) => e.$1 % 4 == 2).map((e) {
         var processed = e.$2.toDouble() / 255.0;
-        processed = processed - 0.406;
-        processed = processed / 0.225;
         return processed;
       }),
     ];
