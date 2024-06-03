@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:i_pet_pal/screens/examine_screen.dart';
-import 'package:i_pet_pal/screens/setting_screen.dart';
 import 'package:i_pet_pal/screens/info_screen.dart';
 
 class Home extends StatefulWidget {
@@ -11,12 +10,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int currentPageIndex = 1;
+  int currentPageIndex = 0;
 
   final List<Widget> pages = <Widget>[
+    const ExamineScreen(
+      examineType: ExamineType.Device,
+    ),
+    const ExamineScreen(
+      examineType: ExamineType.Server,
+    ),
     const InfoScreen(),
-    const ExamineScreen(),
-    const SettingScreen(),
   ];
 
   @override
@@ -42,9 +45,9 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: "간이 검사"),
+          BottomNavigationBarItem(icon: Icon(Icons.loupe), label: "상세 검사"),
           BottomNavigationBarItem(icon: Icon(Icons.info), label: "정보"),
-          BottomNavigationBarItem(icon: Icon(Icons.loupe), label: "검사"),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
         ],
         currentIndex: currentPageIndex,
         onTap: (value) => setState(() {

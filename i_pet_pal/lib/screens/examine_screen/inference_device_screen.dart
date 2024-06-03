@@ -1,13 +1,10 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:i_pet_pal/models/eye_disease_normal.dart';
 import 'package:i_pet_pal/models/skin_disease_normal.dart';
+import 'package:i_pet_pal/screens/examine_screen/confirm_image.dart';
 import 'package:image_picker/image_picker.dart';
-
-enum InferenceType {
-  eye,
-  skin,
-}
 
 class InferenceDeviceScreen extends StatefulWidget {
   final XFile selectedImage;
@@ -25,21 +22,20 @@ class InferenceDeviceScreen extends StatefulWidget {
 
 class _InferenceState extends State<InferenceDeviceScreen> {
   late Future<List<(Future<String>, double)>> diseaseResult;
-  final SkinDiseaseNormalClassification skinDiseaseNormalClassification =
-      SkinDiseaseNormalClassification();
 
   @override
   void initState() {
     super.initState();
 
     setState(() {
-      // diseaseResult = TritonClient.inference(
-      //   "https://nvidia.edens.one/v2",
-      //   "resnet50_onnx",
-      //   widget.selectedImage.readAsBytes(),
-      // );
-      diseaseResult = skinDiseaseNormalClassification
-          .inference(widget.selectedImage.readAsBytes());
+      print(widget.inferenceType);
+      if (widget.inferenceType == InferenceType.skin) {
+        diseaseResult = SkinDiseaseNormalClassification()
+            .inference(widget.selectedImage.readAsBytes());
+      } else {
+        diseaseResult = EyeDiseaseNormalClassification()
+            .inference(widget.selectedImage.readAsBytes());
+      }
     });
   }
 

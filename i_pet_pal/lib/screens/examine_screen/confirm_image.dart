@@ -1,15 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:i_pet_pal/screens/examine_screen.dart';
 import 'package:i_pet_pal/screens/examine_screen/inference_device_screen.dart';
+import 'package:i_pet_pal/screens/examine_screen/inference_server_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:i_pet_pal/models/skin_eye.dart';
 
+enum InferenceType {
+  eye,
+  skin,
+}
+
 class ConfirmImage extends StatefulWidget {
   final XFile selectedImage;
+  final ExamineType examineType;
 
   const ConfirmImage({
     super.key,
     required this.selectedImage,
+    required this.examineType,
   });
 
   @override
@@ -89,7 +98,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  confirm(inferenceType);
+                                  confirm(inferenceType, false);
                                 },
                                 child: const Text("네"),
                               ),
@@ -100,7 +109,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  confirm(inferenceType);
+                                  confirm(inferenceType, true);
                                 },
                                 child: const Text("아니오"),
                               ),
@@ -122,15 +131,29 @@ class _ConfirmImageState extends State<ConfirmImage> {
     );
   }
 
-  void confirm(InferenceType inferenceType) {
+  void confirm(InferenceType inferenceType, bool isInvert) {
+    if (isInvert) {
+      if (inferenceType == InferenceType.skin) {
+        inferenceType = InferenceType.eye;
+      } else if (inferenceType == InferenceType.eye) {
+        inferenceType = InferenceType.skin;
+      }
+    }
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => InferenceDeviceScreen(
-          selectedImage: widget.selectedImage,
-          inferenceType: inferenceType,
-        ),
-      ),
+      MaterialPageRoute(builder: (context) {
+        if (widget.examineType == ExamineType.Device) {
+          return InferenceDeviceScreen(
+            selectedImage: widget.selectedImage,
+            inferenceType: inferenceType,
+          );
+        } else {
+          return InferenceServerScreen(
+            selectedImage: widget.selectedImage,
+            inferenceType: inferenceType,
+          );
+        }
+      }),
     );
   }
 }
