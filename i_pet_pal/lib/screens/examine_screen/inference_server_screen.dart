@@ -2,12 +2,8 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:i_pet_pal/api/triton_client.dart';
+import 'package:i_pet_pal/screens/examine_screen/confirm_image.dart';
 import 'package:image_picker/image_picker.dart';
-
-enum InferenceType {
-  eye,
-  skin,
-}
 
 class InferenceServerScreen extends StatefulWidget {
   final XFile selectedImage;
