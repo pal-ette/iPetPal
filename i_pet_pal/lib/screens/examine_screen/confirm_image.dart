@@ -98,7 +98,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  confirm(inferenceType);
+                                  confirm(inferenceType, false);
                                 },
                                 child: const Text("네"),
                               ),
@@ -109,7 +109,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  confirm(inferenceType);
+                                  confirm(inferenceType, true);
                                 },
                                 child: const Text("아니오"),
                               ),
@@ -131,7 +131,14 @@ class _ConfirmImageState extends State<ConfirmImage> {
     );
   }
 
-  void confirm(InferenceType inferenceType) {
+  void confirm(InferenceType inferenceType, bool isInvert) {
+    if (isInvert) {
+      if (inferenceType == InferenceType.skin) {
+        inferenceType = InferenceType.eye;
+      } else if (inferenceType == InferenceType.eye) {
+        inferenceType = InferenceType.skin;
+      }
+    }
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
