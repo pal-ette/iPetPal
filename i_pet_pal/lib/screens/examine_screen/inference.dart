@@ -114,56 +114,63 @@ class _InferenceState extends State<Inference> {
                             ],
                           ),
                           Expanded(
-                            child: Column(children: [
-                              for (var inference in snapshot.data!)
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 30,
+                            child: Column(
+                              children: [
+                                for (var inference in snapshot.data!)
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 30,
+                                        ),
+                                        height: 30,
+                                        child: LinearProgressIndicator(
+                                          value: inference.$2,
+                                        ),
                                       ),
-                                      height: 30,
-                                      child: LinearProgressIndicator(
-                                        value: inference.$2,
-                                      ),
-                                    ),
-                                    Stack(
-                                      children: [
-                                        Text(
-                                          "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                          style: TextStyle(
-                                            foreground: Paint()
-                                              ..style = PaintingStyle.stroke
-                                              ..strokeWidth = 2
-                                              ..color = (inference.$2 > 0.5)
+                                      Stack(
+                                        children: [
+                                          Text(
+                                            "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                            style: TextStyle(
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 2
+                                                ..color = (inference.$2 > 0.5)
+                                                    ? Theme.of(context)
+                                                        .colorScheme
+                                                        .primary
+                                                    : Theme.of(context)
+                                                        .colorScheme
+                                                        .surfaceContainer,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                            style: TextStyle(
+                                              color: (inference.$2 > 0.5)
                                                   ? Theme.of(context)
                                                       .colorScheme
-                                                      .primary
+                                                      .onPrimary
                                                   : Theme.of(context)
                                                       .colorScheme
-                                                      .surfaceContainer,
+                                                      .onSurface,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                          style: TextStyle(
-                                            color: (inference.$2 > 0.5)
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .onPrimary
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .onSurface,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                            ]),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context)
+                            .popUntil((route) => route.isFirst),
+                        child: const Text("처음으로 돌아가기"),
                       ),
                     ],
                   );
