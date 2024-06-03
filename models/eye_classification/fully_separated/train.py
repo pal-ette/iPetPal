@@ -13,16 +13,21 @@ from shared import (
     calc_accuracy,
     save_checkpoint,
 )
+import model_preset as mp
 
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    batch_size = 32
+    model_preset = mp.Resnet50()
 
-    base_path = "D:\CVProject\개_안구_resized_train_test"
-
-    base_model_name = "resnet50"
+    batch_size = model_preset.batch_size()
+    base_path = model_preset.dataset_path()
+    base_model_name = model_preset.model_name()
+    data_transform = model_preset.data_transform()
+    train_transform = model_preset.train_transform()
+    valid_transform = model_preset.valid_transform()
+    model_filename = model_preset.get_filename()
 
     for disease in os.listdir(base_path):
         if not disease.endswith("_train"):
@@ -30,7 +35,7 @@ if __name__ == "__main__":
         print(disease, end=" / ")
         disease_path = f"{base_path}\\{disease}"
         disease_name = disease.replace("_train", "")
-        dataset = datasets.ImageFolder(disease_path, transforms)
+        dataset = datasets.ImageFolder(disease_path, data_transform)
 
         labels = dataset.classes
         print(f"len(dataset): {len(dataset)}, labels: {dataset.classes}")
@@ -100,6 +105,7 @@ if __name__ == "__main__":
                 img = batch[0].to(device)
                 label = batch[1].to(device)  # .squeeze(1) .float()
 
+                img = train_transform(img)
                 out = model(img).squeeze(1)
                 loss = loss_fn(out, label)
 
@@ -127,6 +133,7 @@ if __name__ == "__main__":
 
                 label = batch[1].to(device)  # .squeeze(1)
 
+                img = valid_transform(img)
                 out = model(img).squeeze(1)
                 loss = loss_fn(out, label)
                 val_loss += loss.item()
@@ -156,12 +163,12 @@ if __name__ == "__main__":
                     train_acc_epoch,
                     val_acc_epoch,
                     model_path,
-                    base_model_name,
+                    model_filename,
                 )
 
         loss_epoch_curve(
             model_path,
-            base_model_name,
+            model_filename,
             train_loss_epoch,
             val_loss_epoch,
             train_acc_epoch,

@@ -4,13 +4,6 @@ import timm
 import pickle
 import matplotlib.pyplot as plt
 from collections import OrderedDict
-from torchvision.transforms import (
-    ToTensor,
-    Normalize,
-    Compose,
-    RandomHorizontalFlip,
-    RandomVerticalFlip,
-)
 
 
 def disease_to_english(disease_name):
@@ -136,6 +129,7 @@ def loss_epoch_curve(
     ax[1].legend(["train", "val"], loc="lower right")
 
     plt.savefig(os.path.join(model_path, f"{filename}.png"))
+    plt.close()
 
 
 def print_file_count(base_dir, depth=1, space=0):
@@ -151,12 +145,3 @@ def print_file_count(base_dir, depth=1, space=0):
         )
         if os.path.isdir(group_path):
             print_file_count(group_path, depth - 1, space + 1)
-
-
-transforms = Compose(
-    [
-        ToTensor(),
-        RandomHorizontalFlip(),
-        RandomVerticalFlip(),
-    ]
-)
