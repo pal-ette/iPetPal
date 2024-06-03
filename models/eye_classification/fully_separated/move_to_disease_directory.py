@@ -5,8 +5,8 @@ import tqdm
 from shared import print_file_count
 
 if __name__ == "__main__":
-    base_dir = "D:\\CVProject\\개_안구_resized_train_test"
-    target_dir = "D:\\CVProject\\개_안구_resized_train_test_desease_only"
+    base_dir = "D:\\CVProject\\개_안구_400x400_train_test"
+    target_dir = "D:\\CVProject\\개_안구_400x400_train_test_desease_only"
 
     for image_path in (pbar := tqdm.tqdm(glob.glob(f"{base_dir}\\*\\*\\*"))):
         image_depth, image_name = os.path.split(image_path)

@@ -5,7 +5,6 @@ from torchvision import datasets, transforms
 import tqdm
 from shared import (
     load_dict,
-    transforms,
     get_model,
     get_optimizer,
     loss_epoch_curve,
@@ -13,17 +12,25 @@ from shared import (
     calc_accuracy,
     save_checkpoint,
 )
+import model_preset as mp
 
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    batch_size = 32
+    model_preset = mp.Efficientnet_224crop()
 
-    base_path = "D:\\CVProject\\개_안구_resized_train_test_desease_only"
+    batch_size = model_preset.batch_size()
+    base_path = model_preset.dataset_path()
+    base_model_name = model_preset.model_name()
+    data_transform = model_preset.data_transform()
+    train_transform = model_preset.train_transform()
+    valid_transform = model_preset.valid_transform()
+    model_filename = model_preset.get_filename()
 
-    base_model_name = "resnet50"
-
-    dataset = datasets.ImageFolder(os.path.join(base_path, "train"), transforms)
+    dataset = datasets.ImageFolder(
+        os.path.join(base_path, "train"),
+        transform=data_transform,
+    )
 
     labels = dataset.classes
     print(f"len(dataset): {len(dataset)}, labels: {dataset.classes}")
@@ -72,9 +79,9 @@ if __name__ == "__main__":
 
     model = model.to(device)
 
-    if False:
-        dict_file = os.path.join(model_path, f"{model_name}.pt")
-        pkl_file = os.path.join(model_path, f"v{model_name}.pickle")
+    if True:
+        dict_file = os.path.join(model_path, f"{model_filename}.pt")
+        pkl_file = os.path.join(model_path, f"{model_filename}.pickle")
 
         epoch_start, labels, model, optimizer = load_dict(model, optimizer, dict_file)
         train_epoch, valid_epoch = load_records(pkl_file)
@@ -85,12 +92,14 @@ if __name__ == "__main__":
         train_acc, train_loss = 0.0, 0.0
         val_acc, val_loss = 0.0, 0.0
         model.train()
-        for batch_id, batch in enumerate(tqdm.tqdm(train_loader)):
+        for batch_id, batch in enumerate(pbar := tqdm.tqdm(train_loader)):
+            pbar.set_description(f"{e} epoch")
             optimizer.zero_grad()
 
             img = batch[0].to(device)
             label = batch[1].to(device)  # .squeeze(1) .float()
 
+            img = train_transform(img)
             out = model(img).squeeze(1)
             loss = loss_fn(out, label)
 
@@ -114,6 +123,7 @@ if __name__ == "__main__":
 
             label = batch[1].to(device)  # .squeeze(1)
 
+            img = valid_transform(img)
             out = model(img).squeeze(1)
             loss = loss_fn(out, label)
             val_loss += loss.item()
@@ -143,14 +153,14 @@ if __name__ == "__main__":
                 train_acc_epoch,
                 val_acc_epoch,
                 model_path,
-                base_model_name,
+                model_filename,
             )
 
-    loss_epoch_curve(
-        model_path,
-        base_model_name,
-        train_loss_epoch,
-        val_loss_epoch,
-        train_acc_epoch,
-        val_acc_epoch,
-    )
+        loss_epoch_curve(
+            model_path,
+            model_filename,
+            train_loss_epoch,
+            val_loss_epoch,
+            train_acc_epoch,
+            val_acc_epoch,
+        )
