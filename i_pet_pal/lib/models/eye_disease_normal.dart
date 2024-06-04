@@ -91,7 +91,7 @@ class EyeDiseaseNormalClassification {
     final indexed = rgbaUints.indexed;
     return [
       ...indexed.where((e) => [0, 1, 2].contains(e.$1 % 4)).map((e) {
-        var processed = e.$2.toDouble();
+        var processed = e.$2.toDouble() / 225.0;
         return processed;
       })
     ];

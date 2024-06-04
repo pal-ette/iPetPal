@@ -31,7 +31,7 @@ class _InferenceState extends State<InferenceServerScreen> {
       if (widget.inferenceType == InferenceType.skin) {
         apiPath = "";
       } else if (widget.inferenceType == InferenceType.eye) {
-        apiPath = "";
+        apiPath = "eye_disease_4";
       }
       diseaseResult = TritonClient.inference(
         "https://nvidia.edens.one/v2",
