@@ -5,15 +5,16 @@ input [
     name: "input"
     data_type: TYPE_FP32
     format: FORMAT_NCHW
-    dims: [ 3, 224, 224 ]
-    reshape { shape: [ 1, 3, 224, 224 ] }
+    dims: [ 224, 224, 3 ]
+    reshape { shape: [ 1, 224, 224, 3 ] }
   }
 ]
 output [
   {
     name: "output"
     data_type: TYPE_FP32
-    dims: [ 1, 3 ]
-    label_filename: "label.txt"
+    dims: [ 1, 4 ]
+    reshape { shape: [ 1, 4 ] }
+    label_filename: "eye_disease_4.txt"
   }
 ]
