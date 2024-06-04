@@ -2,7 +2,7 @@ platform: "onnxruntime_onnx"
 max_batch_size : 0
 input [
   {
-    name: "input"
+    name: "input_1"
     data_type: TYPE_FP32
     format: FORMAT_NCHW
     dims: [ 224, 224, 3 ]
@@ -11,10 +11,9 @@ input [
 ]
 output [
   {
-    name: "output"
+    name: "dense_1"
     data_type: TYPE_FP32
-    dims: [ 1, 4 ]
-    reshape { shape: [ 1, 4 ] }
+    dims: [ -1, 4 ]
     label_filename: "eye_disease_4.txt"
   }
 ]
