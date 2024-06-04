@@ -31,7 +31,6 @@ class EyeDiseaseNormalClassification {
     final rgbFloats = await imageToFloatTensor(image);
     final inputOrt = OrtValueTensor.createTensorWithDataList(
         Float32List.fromList(rgbFloats), [1, 224, 224, 3]);
-
     final inputs = {session.inputNames[0]: inputOrt};
     final outputs = session.run(runOptions, inputs);
     inputOrt.release();
@@ -41,10 +40,10 @@ class EyeDiseaseNormalClassification {
     OrtEnv.instance.release();
     List outFloats = outputs[0]?.value as List;
     stopwatch.stop();
-
+    final result = outFloats[0][0].clamp(0.0, 1.0);
     return [
-      (getLabel(0), outFloats[0][0]),
-      (getLabel(1), 1.0 - outFloats[0][0]),
+      (getLabel(0), 1.0 - result),
+      (getLabel(1), result),
     ];
   }
 
@@ -91,18 +90,10 @@ class EyeDiseaseNormalClassification {
     final rgbaUints = Uint8List.view(imageAsFloatBytes.buffer);
     final indexed = rgbaUints.indexed;
     return [
-      ...indexed.where((e) => e.$1 % 4 == 0).map((e) {
-        var processed = e.$2.toDouble() / 255.0;
+      ...indexed.where((e) => [0, 1, 2].contains(e.$1 % 4)).map((e) {
+        var processed = e.$2.toDouble();
         return processed;
-      }),
-      ...indexed.where((e) => e.$1 % 4 == 1).map((e) {
-        var processed = e.$2.toDouble() / 255.0;
-        return processed;
-      }),
-      ...indexed.where((e) => e.$1 % 4 == 2).map((e) {
-        var processed = e.$2.toDouble() / 255.0;
-        return processed;
-      }),
+      })
     ];
   }
 }

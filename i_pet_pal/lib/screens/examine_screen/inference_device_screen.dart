@@ -28,7 +28,6 @@ class _InferenceState extends State<InferenceDeviceScreen> {
     super.initState();
 
     setState(() {
-      print(widget.inferenceType);
       if (widget.inferenceType == InferenceType.skin) {
         diseaseResult = SkinDiseaseNormalClassification()
             .inference(widget.selectedImage.readAsBytes());
