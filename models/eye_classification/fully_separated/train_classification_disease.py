@@ -17,7 +17,7 @@ import model_preset as mp
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model_preset = mp.Efficientnet_224crop()
+    model_preset = mp.VisionTransformer5class()
 
     batch_size = model_preset.batch_size()
     base_path = model_preset.dataset_path()
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     with open(os.path.join(model_path, "label.txt"), "w", encoding="utf8") as file:
         file.write("\n".join(labels))
 
-    num_epochs = 30
+    num_epochs = 50
 
     best_val_acc, best_val_loss = 0.0, 100.0
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     model = model.to(device)
 
-    if True:
+    if False:
         dict_file = os.path.join(model_path, f"{model_filename}.pt")
         pkl_file = os.path.join(model_path, f"{model_filename}.pickle")
 
