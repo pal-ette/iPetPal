@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'iPetPal',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.purple,
+          seedColor: Colors.black,
         ),
         useMaterial3: true,
       ),

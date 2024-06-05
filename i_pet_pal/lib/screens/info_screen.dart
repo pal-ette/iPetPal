@@ -7,13 +7,18 @@ class InfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Column(
+      body: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("https://github.com/pal-ette/iPetPal"),
+              SizedBox(
+                height: 20,
+              ),
+              Text("puppy by IronSV from Noun Project (CC BY 3.0)"),
+              // https://thenounproject.com/browse/icons/term/puppy/
             ],
           ),
         ],
