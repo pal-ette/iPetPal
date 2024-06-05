@@ -142,7 +142,7 @@ class _ConfirmImageState extends State<ConfirmImage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
-        if (widget.examineType == ExamineType.Device) {
+        if (widget.examineType == ExamineType.device) {
           return InferenceDeviceScreen(
             selectedImage: widget.selectedImage,
             inferenceType: inferenceType,
