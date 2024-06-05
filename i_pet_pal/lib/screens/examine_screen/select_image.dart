@@ -42,9 +42,9 @@ class _SelectImageState extends State<SelectImage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (widget.examineType == ExamineType.Device)
+        if (widget.examineType == ExamineType.device)
           _buildDeviceDescription(context),
-        if (widget.examineType == ExamineType.Server)
+        if (widget.examineType == ExamineType.server)
           _buildServerDescription(context),
         _buildButton(context),
         const SizedBox(

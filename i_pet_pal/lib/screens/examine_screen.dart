@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'examine_screen/select_image.dart';
 
 enum ExamineType {
-  Device,
-  Server,
+  device,
+  server,
 }
 
 class ExamineScreen extends StatefulWidget {

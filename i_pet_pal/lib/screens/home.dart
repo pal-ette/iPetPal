@@ -15,10 +15,10 @@ class _HomeState extends State<Home> {
 
   final List<Widget> pages = <Widget>[
     const ExamineScreen(
-      examineType: ExamineType.Device,
+      examineType: ExamineType.device,
     ),
     const ExamineScreen(
-      examineType: ExamineType.Server,
+      examineType: ExamineType.server,
     ),
     const InfoScreen(),
   ];
