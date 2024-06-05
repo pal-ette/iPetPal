@@ -1,0 +1,19 @@
+platform: "onnxruntime_onnx"
+max_batch_size : 0
+input [
+  {
+    name: "input.1"
+    data_type: TYPE_FP32
+    format: FORMAT_NCHW
+    dims: [ 3, 224, 224 ]
+    reshape { shape: [ 1, 3, 224, 224 ] }
+  }
+]
+output [
+  {
+    name: "651"
+    data_type: TYPE_FP32
+    dims: [ 1, 4 ]
+    label_filename: "skin_disease_4.txt"
+  }
+]
