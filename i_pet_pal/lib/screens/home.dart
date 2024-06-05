@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:i_pet_pal/screens/examine_screen.dart';
 import 'package:i_pet_pal/screens/info_screen.dart';
 
@@ -26,15 +27,18 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(
-              Icons.pets,
-            ),
             SizedBox(
+              width: 30,
+              child: SvgPicture.asset(
+                "assets/icon.svg",
+              ),
+            ),
+            const SizedBox(
               width: 5,
             ),
-            Text(
+            const Text(
               'iPetPal',
               style: TextStyle(
                 fontSize: 24,

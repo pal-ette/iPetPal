@@ -30,6 +30,8 @@ environment:
 dependencies:
   onnxruntime: ^1.4.1
   image_picker: ^1.1.1
+  flutter_svg: ^2.0.10+1
+  url_launcher: ^6.3.0
   flutter:
     sdk: flutter
 
