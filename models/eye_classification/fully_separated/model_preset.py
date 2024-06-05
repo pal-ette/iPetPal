@@ -258,3 +258,162 @@ class Efficientnet_224crop(model_preset):
 
     def batch_size(self):
         return 32
+
+
+class Efficientnet_final(model_preset):
+
+    def model_name(self):
+        return "efficientnet_b0"
+
+    def data_transform(self):
+        return Compose(
+            [
+                ToTensor(),
+            ]
+        )
+
+    def train_transform(self):
+        return Compose(
+            [
+                Resize((320, 320)),
+                RandomCrop((224, 224)),
+                RandomRotation((-180, 180)),
+                RandomHorizontalFlip(),
+                RandomVerticalFlip(),
+                ColorJitter(
+                    brightness=0.8,
+                    contrast=0.8,
+                ),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+                RandomErasing(),
+            ]
+        )
+
+    def valid_transform(self):
+        return Compose(
+            [
+                Resize((224, 224)),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+            ]
+        )
+
+    def get_filename(self):
+        return "efficientnet_final"
+
+    def dataset_path(self):
+        return "D:\\CVProject\\개_안구_400x400_train_test_desease_only"
+
+    def batch_size(self):
+        return 32
+
+
+class VisionTransformer(model_preset):
+
+    def model_name(self):
+        return "vit_base_patch16_224"
+
+    def data_transform(self):
+        return Compose(
+            [
+                ToTensor(),
+            ]
+        )
+
+    def train_transform(self):
+        return Compose(
+            [
+                Resize((320, 320)),
+                RandomCrop((224, 224)),
+                RandomRotation((-180, 180)),
+                RandomHorizontalFlip(),
+                RandomVerticalFlip(),
+                ColorJitter(
+                    brightness=0.8,
+                    contrast=0.8,
+                ),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+                RandomErasing(),
+            ]
+        )
+
+    def valid_transform(self):
+        return Compose(
+            [
+                Resize((224, 224)),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+            ]
+        )
+
+    def get_filename(self):
+        return "vit"
+
+    def dataset_path(self):
+        return "D:\\CVProject\\개_안구_400x400_train_test_desease_only"
+
+    def batch_size(self):
+        return 24
+
+
+class VisionTransformer5class(model_preset):
+
+    def model_name(self):
+        return "vit_base_patch16_224"
+
+    def data_transform(self):
+        return Compose(
+            [
+                ToTensor(),
+            ]
+        )
+
+    def train_transform(self):
+        return Compose(
+            [
+                Resize((320, 320)),
+                RandomCrop((224, 224)),
+                RandomRotation((-180, 180)),
+                RandomHorizontalFlip(),
+                RandomVerticalFlip(),
+                ColorJitter(
+                    brightness=0.8,
+                    contrast=0.8,
+                ),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+                RandomErasing(),
+            ]
+        )
+
+    def valid_transform(self):
+        return Compose(
+            [
+                Resize((224, 224)),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+            ]
+        )
+
+    def get_filename(self):
+        return "vit_5class"
+
+    def dataset_path(self):
+        return "D:\\CVProject\\개_안구_400x400_train_test_5class"
+
+    def batch_size(self):
+        return 24
