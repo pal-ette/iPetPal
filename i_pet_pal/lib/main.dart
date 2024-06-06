@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
       home: const Home(),
       title: 'iPetPal',
       theme: ThemeData(
+        fontFamily: 'KyoboHandwrite2023',
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.black,
         ),

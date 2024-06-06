@@ -73,6 +73,12 @@ flutter:
     - assets/
     - assets/labels/
     - assets/models/
+    - assets/fonts/
+
+  fonts:
+    - family: KyoboHandwrite2023
+      fonts:
+        - asset: assets/fonts/KyoboHandwriting2023wsa.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
