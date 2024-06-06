@@ -13,7 +13,7 @@ output [
   {
     name: "dense_1"
     data_type: TYPE_FP32
-    dims: [ -1, 4 ]
-    label_filename: "eye_disease_4.txt"
+    dims: [ -1, 5 ]
+    label_filename: "eye_disease_5.txt"
   }
 ]
