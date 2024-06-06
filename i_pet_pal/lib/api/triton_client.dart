@@ -36,7 +36,7 @@ class TritonClient {
     final values = result.map((e) => e.$2);
     final softmaxValues = softmax(values.toList());
     return List<(String, double)>.generate(
-      4,
+      result.length,
       (index) => (result[index].$1, softmaxValues[index]),
     );
   }

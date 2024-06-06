@@ -2,7 +2,7 @@ platform: "onnxruntime_onnx"
 max_batch_size : 0
 input [
   {
-    name: "input_1"
+    name: "input_2"
     data_type: TYPE_FP32
     format: FORMAT_NCHW
     dims: [ 224, 224, 3 ]
@@ -11,7 +11,7 @@ input [
 ]
 output [
   {
-    name: "dense_1"
+    name: "dense_3"
     data_type: TYPE_FP32
     dims: [ -1, 5 ]
     label_filename: "eye_disease_5.txt"
