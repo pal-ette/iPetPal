@@ -116,7 +116,7 @@ class _InferenceState extends State<InferenceServerScreen> {
       apiPath = "skin_disease_4";
       body = await _imageToRequestBody(image);
     } else if (widget.inferenceType == InferenceType.eye) {
-      apiPath = "eye_disease_4";
+      apiPath = "eye_disease_5";
       body = await _imageToRequestBodyTf(image);
     }
     return (apiPath, body);
