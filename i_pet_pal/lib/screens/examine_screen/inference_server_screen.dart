@@ -42,7 +42,7 @@ class _InferenceState extends State<InferenceServerScreen> {
     final body = {
       "inputs": [
         {
-          "name": "input_1",
+          "name": "input_2",
           "datatype": "FP32",
           "shape": [224, 224, 3],
           "data": imageTensor.value,
@@ -50,9 +50,9 @@ class _InferenceState extends State<InferenceServerScreen> {
       ],
       "outputs": [
         {
-          "name": "dense_1",
+          "name": "dense_3",
           "parameters": {
-            "classification": 4,
+            "classification": 5,
           },
         }
       ]
