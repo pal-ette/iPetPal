@@ -15,7 +15,7 @@ class InfoScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               for (final widget in [
-                const Text("https://github.com/pal-ette/iPetPal"),
+                _github(),
                 _iconLicense(),
                 _fontLicense(),
               ]) ...[
@@ -31,24 +31,32 @@ class InfoScreen extends StatelessWidget {
     );
   }
 
-  void _onTapNounProject() async {
-    await launchUrl(
-      Uri.parse("https://thenounproject.com/browse/icons/term/puppy/"),
+  Widget _weblinkText(String text, String url) {
+    return GestureDetector(
+      onTap: () async => await launchUrl(
+        Uri.parse(url),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          decoration: TextDecoration.underline,
+        ),
+      ),
     );
+  }
+
+  Widget _github() {
+    return _weblinkText("https://github.com/pal-ette/iPetPal",
+        "https://github.com/pal-ette/iPetPal");
   }
 
   Widget _iconLicense() {
     return Row(
       children: [
         const Text("puppy by IronSV from "),
-        GestureDetector(
-          onTap: _onTapNounProject,
-          child: const Text(
-            "Noun Project",
-            style: TextStyle(
-              decoration: TextDecoration.underline,
-            ),
-          ),
+        _weblinkText(
+          "Noun Project",
+          "https://thenounproject.com/browse/icons/term/puppy/",
         ),
         const Text(" (CC BY 3.0)"),
       ],
@@ -56,6 +64,13 @@ class InfoScreen extends StatelessWidget {
   }
 
   Widget _fontLicense() {
-    return const Text("이 어플리케이션에는 교보 손글씨 2023 우선아 폰트를 사용되었습니다.");
+    return Row(children: [
+      const Text("이 어플리케이션에는 "),
+      _weblinkText(
+        "교보 손글씨 2023 우선아 폰트",
+        "https://www.kyobobook.co.kr/handwriting/font",
+      ),
+      const Text(" 가 사용되었습니다."),
+    ]);
   }
 }
