@@ -86,9 +86,19 @@ class _ConfirmImageState extends State<ConfirmImage> {
                     return Column(
                       children: [
                         if (inferenceType == InferenceType.eye)
-                          const Text("눈 사진이 맞나요?"),
+                          const Text(
+                            "눈 사진이 맞나요?",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
                         if (inferenceType == InferenceType.skin)
-                          const Text("피부 사진이 맞나요?"),
+                          const Text(
+                            "피부 사진이 맞나요?",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -100,7 +110,12 @@ class _ConfirmImageState extends State<ConfirmImage> {
                                 onPressed: () {
                                   confirm(inferenceType, false);
                                 },
-                                child: const Text("네"),
+                                child: const Text(
+                                  "네",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
                               ),
                             ),
                             const SizedBox(
@@ -111,7 +126,12 @@ class _ConfirmImageState extends State<ConfirmImage> {
                                 onPressed: () {
                                   confirm(inferenceType, true);
                                 },
-                                child: const Text("아니오"),
+                                child: const Text(
+                                  "아니오",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
                               ),
                             ),
                             const SizedBox(

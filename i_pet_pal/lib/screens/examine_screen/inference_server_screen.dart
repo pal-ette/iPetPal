@@ -156,140 +156,145 @@ class _InferenceState extends State<InferenceServerScreen> {
             color:
                 Theme.of(context).colorScheme.surfaceContainer.withAlpha(180),
           ),
-          Column(
-            children: [
-              Text(
-                (widget.inferenceType == InferenceType.eye)
-                    ? "눈 검사 결과"
-                    : "피부 검사 결과",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 60.0,
-                ),
-              ),
-              if (diseaseResult == null)
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              children: [
+                Text(
+                  (widget.inferenceType == InferenceType.eye)
+                      ? "눈 검사 결과"
+                      : "피부 검사 결과",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 60.0,
                   ),
                 ),
-              if (diseaseResult != null)
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                for (var inference in diseaseResult!)
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 30,
-                                    ),
-                                    height: 30,
-                                    alignment: Alignment.center,
-                                    child: Stack(
-                                      children: [
-                                        Text(
-                                          inference.$1,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w900,
-                                            foreground: Paint()
-                                              ..style = PaintingStyle.stroke
-                                              ..strokeWidth = 2
-                                              ..color = Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainer,
-                                          ),
-                                        ),
-                                        Text(
-                                          inference.$1,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w900,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(width: 20),
-                            Expanded(
-                              child: Column(
+                if (diseaseResult == null)
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: const CircularProgressIndicator(),
+                    ),
+                  ),
+                if (diseaseResult != null)
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   for (var inference in diseaseResult!)
-                                    Stack(
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 30,
+                                      ),
+                                      height: 30,
                                       alignment: Alignment.center,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 30,
-                                          ),
-                                          height: 30,
-                                          child: LinearProgressIndicator(
-                                            value: inference.$2,
-                                          ),
-                                        ),
-                                        Stack(
-                                          children: [
-                                            Text(
-                                              "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                              style: TextStyle(
-                                                foreground: Paint()
-                                                  ..style = PaintingStyle.stroke
-                                                  ..strokeWidth = 2
-                                                  ..color = (inference.$2 > 0.5)
-                                                      ? Theme.of(context)
-                                                          .colorScheme
-                                                          .primary
-                                                      : Theme.of(context)
-                                                          .colorScheme
-                                                          .surfaceContainer,
-                                              ),
+                                      child: Stack(
+                                        children: [
+                                          Text(
+                                            inference.$1,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w900,
+                                              foreground: Paint()
+                                                ..style = PaintingStyle.stroke
+                                                ..strokeWidth = 2
+                                                ..color = Theme.of(context)
+                                                    .colorScheme
+                                                    .surfaceContainer,
                                             ),
-                                            Text(
-                                              "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                              style: TextStyle(
-                                                color: (inference.$2 > 0.5)
-                                                    ? Theme.of(context)
-                                                        .colorScheme
-                                                        .onPrimary
-                                                    : Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface,
-                                              ),
+                                          ),
+                                          Text(
+                                            inference.$1,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w900,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
                                             ),
-                                          ],
-                                        )
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                 ],
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 20),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (var inference in diseaseResult!)
+                                      Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                              vertical: 30,
+                                            ),
+                                            height: 30,
+                                            child: LinearProgressIndicator(
+                                              value: inference.$2,
+                                            ),
+                                          ),
+                                          Stack(
+                                            children: [
+                                              Text(
+                                                "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                                style: TextStyle(
+                                                  foreground: Paint()
+                                                    ..style =
+                                                        PaintingStyle.stroke
+                                                    ..strokeWidth = 2
+                                                    ..color = (inference.$2 >
+                                                            0.5)
+                                                        ? Theme.of(context)
+                                                            .colorScheme
+                                                            .primary
+                                                        : Theme.of(context)
+                                                            .colorScheme
+                                                            .surfaceContainer,
+                                                ),
+                                              ),
+                                              Text(
+                                                "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                                style: TextStyle(
+                                                  color: (inference.$2 > 0.5)
+                                                      ? Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimary
+                                                      : Theme.of(context)
+                                                          .colorScheme
+                                                          .onSurface,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context)
-                            .popUntil((route) => route.isFirst),
-                        child: const Text("처음으로 돌아가기"),
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                    ],
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context)
+                              .popUntil((route) => route.isFirst),
+                          child: const Text("처음으로 돌아가기"),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           )
         ],
       ),
