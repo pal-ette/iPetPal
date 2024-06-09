@@ -55,135 +55,159 @@ class _InferenceState extends State<InferenceDeviceScreen> {
             color:
                 Theme.of(context).colorScheme.surfaceContainer.withAlpha(180),
           ),
-          Column(
-            children: [
-              Text(
-                "결과",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 60.0,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              children: [
+                Text(
+                  (widget.inferenceType == InferenceType.eye)
+                      ? "눈 검사 결과"
+                      : "피부 검사 결과",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 60.0,
+                  ),
                 ),
-              ),
-              FutureBuilder(
-                future: diseaseResult,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
-                  }
+                Expanded(
+                  child: FutureBuilder(
+                    future: diseaseResult,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator());
+                      }
 
-                  return Column(
-                    children: [
-                      Row(
+                      return Column(
                         children: [
-                          Column(
-                            children: [
-                              for (var inference in snapshot.data!)
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 30,
-                                  ),
-                                  height: 30,
-                                  alignment: Alignment.center,
-                                  child: FutureBuilder(
-                                    future: inference.$1,
-                                    builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return const CircularProgressIndicator();
-                                      }
-                                      return Stack(
-                                        children: [
-                                          Text(
-                                            snapshot.data!,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w900,
-                                              foreground: Paint()
-                                                ..style = PaintingStyle.stroke
-                                                ..strokeWidth = 2
-                                                ..color = Theme.of(context)
-                                                    .colorScheme
-                                                    .surfaceContainer,
-                                            ),
-                                          ),
-                                          Text(
-                                            snapshot.data!,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w900,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                            ],
-                          ),
                           Expanded(
-                            child: Column(
+                            child: Row(
                               children: [
-                                for (var inference in snapshot.data!)
-                                  Stack(
-                                    alignment: Alignment.center,
-                                    children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (var inference in snapshot.data!)
                                       Container(
                                         margin: const EdgeInsets.symmetric(
                                           vertical: 30,
                                         ),
                                         height: 30,
-                                        child: LinearProgressIndicator(
-                                          value: inference.$2,
+                                        alignment: Alignment.center,
+                                        child: FutureBuilder(
+                                          future: inference.$1,
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) {
+                                              return const CircularProgressIndicator();
+                                            }
+                                            return Stack(
+                                              children: [
+                                                Text(
+                                                  snapshot.data!,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w900,
+                                                    foreground: Paint()
+                                                      ..style =
+                                                          PaintingStyle.stroke
+                                                      ..strokeWidth = 2
+                                                      ..color =
+                                                          Theme.of(context)
+                                                              .colorScheme
+                                                              .surfaceContainer,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  snapshot.data!,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w900,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
                                         ),
                                       ),
-                                      Stack(
-                                        children: [
-                                          Text(
-                                            "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                            style: TextStyle(
-                                              foreground: Paint()
-                                                ..style = PaintingStyle.stroke
-                                                ..strokeWidth = 2
-                                                ..color = (inference.$2 > 0.5)
-                                                    ? Theme.of(context)
-                                                        .colorScheme
-                                                        .primary
-                                                    : Theme.of(context)
-                                                        .colorScheme
-                                                        .surfaceContainer,
+                                  ],
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      for (var inference in snapshot.data!)
+                                        Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 30,
+                                              ),
+                                              height: 30,
+                                              child: LinearProgressIndicator(
+                                                value: inference.$2,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            "${(inference.$2 * 100).toStringAsFixed(2)}%",
-                                            style: TextStyle(
-                                              color: (inference.$2 > 0.5)
-                                                  ? Theme.of(context)
-                                                      .colorScheme
-                                                      .onPrimary
-                                                  : Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurface,
-                                            ),
-                                          ),
-                                        ],
-                                      )
+                                            Stack(
+                                              children: [
+                                                Text(
+                                                  "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                                  style: TextStyle(
+                                                    foreground: Paint()
+                                                      ..style =
+                                                          PaintingStyle.stroke
+                                                      ..strokeWidth = 2
+                                                      ..color = (inference.$2 >
+                                                              0.5)
+                                                          ? Theme.of(context)
+                                                              .colorScheme
+                                                              .primary
+                                                          : Theme.of(context)
+                                                              .colorScheme
+                                                              .surfaceContainer,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "${(inference.$2 * 100).toStringAsFixed(2)}%",
+                                                  style: TextStyle(
+                                                    color: (inference.$2 > 0.5)
+                                                        ? Theme.of(context)
+                                                            .colorScheme
+                                                            .onPrimary
+                                                        : Theme.of(context)
+                                                            .colorScheme
+                                                            .onSurface,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
                                     ],
                                   ),
+                                ),
                               ],
                             ),
                           ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context)
+                                .popUntil((route) => route.isFirst),
+                            child: const Text("처음으로 돌아가기"),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
                         ],
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context)
-                            .popUntil((route) => route.isFirst),
-                        child: const Text("처음으로 돌아가기"),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       ),
