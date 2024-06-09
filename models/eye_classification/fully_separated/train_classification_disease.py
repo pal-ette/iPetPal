@@ -17,7 +17,7 @@ import model_preset as mp
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model_preset = mp.VisionTransformer5class()
+    model_preset = mp.VisionTransformerSkin4class()
 
     batch_size = model_preset.batch_size()
     base_path = model_preset.dataset_path()
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     with open(os.path.join(model_path, "label.txt"), "w", encoding="utf8") as file:
         file.write("\n".join(labels))
 
-    num_epochs = 50
+    num_epochs = 1000
 
     best_val_acc, best_val_loss = 0.0, 100.0
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     model = model.to(device)
 
-    if False:
+    if True:
         dict_file = os.path.join(model_path, f"{model_filename}.pt")
         pkl_file = os.path.join(model_path, f"{model_filename}.pickle")
 
@@ -93,7 +93,7 @@ if __name__ == "__main__":
         val_acc, val_loss = 0.0, 0.0
         model.train()
         for batch_id, batch in enumerate(pbar := tqdm.tqdm(train_loader)):
-            pbar.set_description(f"{e} epoch")
+            pbar.set_description(f"{e} epoch (train)")
             optimizer.zero_grad()
 
             img = batch[0].to(device)
@@ -117,7 +117,8 @@ if __name__ == "__main__":
         print("epoch {} train acc {} loss {}".format(e, tot_train_acc, mean_train_loss))
 
         model.eval()
-        for batch_id, batch in enumerate(tqdm.tqdm(valid_loader)):
+        for batch_id, batch in enumerate(pbar := tqdm.tqdm(valid_loader)):
+            pbar.set_description(f"{e} epoch (valid)")
 
             img = batch[0].to(device)
 
