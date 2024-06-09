@@ -38,19 +38,22 @@ class _SelectImageState extends State<SelectImage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        if (widget.examineType == ExamineType.device)
-          _buildDeviceDescription(context),
-        if (widget.examineType == ExamineType.server)
-          _buildServerDescription(context),
-        _buildButton(context),
-        const SizedBox(
-          height: 30,
-        )
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (widget.examineType == ExamineType.device)
+            _buildDeviceDescription(context),
+          if (widget.examineType == ExamineType.server)
+            _buildServerDescription(context),
+          _buildButton(context),
+          const SizedBox(
+            height: 10,
+          )
+        ],
+      ),
     );
   }
 
@@ -58,23 +61,72 @@ class _SelectImageState extends State<SelectImage> {
     return Expanded(
       child: Column(
         children: [
-          Expanded(
-            child: Container(
-              alignment: Alignment.center,
-              child: const Text(
-                "🔍 간이 검사",
-                style: TextStyle(
-                  fontSize: 40,
-                ),
+          Container(
+            alignment: Alignment.center,
+            child: const Text(
+              "🔍 간이 검사",
+              style: TextStyle(
+                fontSize: 40,
               ),
             ),
           ),
-          const Expanded(
-            child: Column(
-              children: [
-                Text("사진을 통해 빠르게 아픈지 아닌지를 판단합니다."),
-                Text("서버 연결이 필요 없이 기기에서 진단합니다."),
-              ],
+          const Text(
+            "서버 연결이 필요 없이 기기에서 진단합니다.",
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          DefaultTabController(
+            key: UniqueKey(),
+            length: 3,
+            child: Expanded(
+              child: Column(
+                children: [
+                  const Expanded(
+                    child: TabBarView(
+                      children: [
+                        Column(
+                          children: [
+                            Expanded(child: Text("그림")),
+                            Text(
+                              "1. 새로 촬영하거나 저장된 사진을 선택합니다.",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            )
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Expanded(child: Text("그림")),
+                            Text(
+                              "2. 눈을 촬영한 사진인지, 피부를 촬영한 사진인지 확인합니다.",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Expanded(child: Text("그림")),
+                            Text(
+                              "3. 질병이 의심되는지 여부를 보여줍니다.",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  TabPageSelector(
+                    color: Colors.white,
+                    selectedColor: Theme.of(context).primaryColor,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -86,23 +138,72 @@ class _SelectImageState extends State<SelectImage> {
     return Expanded(
       child: Column(
         children: [
-          Expanded(
-            child: Container(
-              alignment: Alignment.center,
-              child: const Text(
-                "🧑🏻‍⚕️ 상세 검사",
-                style: TextStyle(
-                  fontSize: 40,
-                ),
+          Container(
+            alignment: Alignment.center,
+            child: const Text(
+              "🧑🏻‍⚕️ 상세 검사",
+              style: TextStyle(
+                fontSize: 40,
               ),
             ),
           ),
-          const Expanded(
-            child: Column(
-              children: [
-                Text("사진을 통해 의심되는 질병을 진단합니다."),
-                Text("서버 연결을 통해서 보다 정확하게 진단합니다."),
-              ],
+          const Text(
+            "서버 연결을 통해서 보다 정확하게 진단합니다.",
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          DefaultTabController(
+            key: UniqueKey(),
+            length: 3,
+            child: Expanded(
+              child: Column(
+                children: [
+                  const Expanded(
+                    child: TabBarView(
+                      children: [
+                        Column(
+                          children: [
+                            Expanded(child: Text("그림")),
+                            Text(
+                              "1. 새로 촬영하거나 저장된 사진을 선택합니다.",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Expanded(child: Text("그림")),
+                            Text(
+                              "2. 눈을 촬영한 사진인지, 피부를 촬영한 사진인지 확인합니다.",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Expanded(child: Text("그림")),
+                            Text(
+                              "3. 의심되는 질병을 높은 순서로 보여줍니다.",
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  TabPageSelector(
+                    color: Colors.white,
+                    selectedColor: Theme.of(context).primaryColor,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -112,7 +213,6 @@ class _SelectImageState extends State<SelectImage> {
 
   Widget _buildButton(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Expanded(
           child: ElevatedButton(
@@ -120,8 +220,9 @@ class _SelectImageState extends State<SelectImage> {
               setImage(context, ImageSource.camera);
             },
             style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(60),
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+              ),
             ),
             child: const Column(
               children: [
@@ -131,14 +232,16 @@ class _SelectImageState extends State<SelectImage> {
             ),
           ),
         ),
+        const SizedBox(width: 20),
         Expanded(
           child: ElevatedButton(
             onPressed: () {
               setImage(context, ImageSource.gallery);
             },
             style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(60),
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+              ),
             ),
             child: const Column(
               children: [
