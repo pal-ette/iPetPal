@@ -417,3 +417,56 @@ class VisionTransformer5class(model_preset):
 
     def batch_size(self):
         return 24
+
+
+class VisionTransformerSkin4class(model_preset):
+
+    def model_name(self):
+        return "vit_base_patch16_224"
+
+    def data_transform(self):
+        return Compose(
+            [
+                ToTensor(),
+            ]
+        )
+
+    def train_transform(self):
+        return Compose(
+            [
+                Resize((320, 320)),
+                RandomCrop((224, 224)),
+                RandomRotation((-180, 180)),
+                RandomHorizontalFlip(),
+                RandomVerticalFlip(),
+                ColorJitter(
+                    brightness=0.8,
+                    contrast=0.8,
+                ),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+                RandomErasing(),
+            ]
+        )
+
+    def valid_transform(self):
+        return Compose(
+            [
+                Resize((224, 224)),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+            ]
+        )
+
+    def get_filename(self):
+        return "vit_skin_4class"
+
+    def dataset_path(self):
+        return "D:\\CVProject\\피부"
+
+    def batch_size(self):
+        return 24
