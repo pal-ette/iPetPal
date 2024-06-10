@@ -82,13 +82,15 @@ class _SelectImageState extends State<SelectImage> {
             child: Expanded(
               child: Column(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: TabBarView(
                       children: [
                         Column(
                           children: [
-                            Expanded(child: Text("그림")),
-                            Text(
+                            Expanded(
+                              child: Image.asset('assets/guides/guide_1.jpg'),
+                            ),
+                            const Text(
                               "1. 새로 촬영하거나 저장된 사진을 선택합니다.",
                               style: TextStyle(
                                 fontSize: 20,
@@ -98,8 +100,10 @@ class _SelectImageState extends State<SelectImage> {
                         ),
                         Column(
                           children: [
-                            Expanded(child: Text("그림")),
-                            Text(
+                            Expanded(
+                              child: Image.asset('assets/guides/guide_2.jpg'),
+                            ),
+                            const Text(
                               "2. 눈을 촬영한 사진인지, 피부를 촬영한 사진인지 확인합니다.",
                               style: TextStyle(
                                 fontSize: 20,
@@ -109,8 +113,10 @@ class _SelectImageState extends State<SelectImage> {
                         ),
                         Column(
                           children: [
-                            Expanded(child: Text("그림")),
-                            Text(
+                            Expanded(
+                              child: Image.asset('assets/guides/guide_3_1.jpg'),
+                            ),
+                            const Text(
                               "3. 질병이 의심되는지 여부를 보여줍니다.",
                               style: TextStyle(
                                 fontSize: 20,
@@ -159,13 +165,15 @@ class _SelectImageState extends State<SelectImage> {
             child: Expanded(
               child: Column(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: TabBarView(
                       children: [
                         Column(
                           children: [
-                            Expanded(child: Text("그림")),
-                            Text(
+                            Expanded(
+                              child: Image.asset('assets/guides/guide_1.jpg'),
+                            ),
+                            const Text(
                               "1. 새로 촬영하거나 저장된 사진을 선택합니다.",
                               style: TextStyle(
                                 fontSize: 20,
@@ -175,8 +183,10 @@ class _SelectImageState extends State<SelectImage> {
                         ),
                         Column(
                           children: [
-                            Expanded(child: Text("그림")),
-                            Text(
+                            Expanded(
+                              child: Image.asset('assets/guides/guide_2.jpg'),
+                            ),
+                            const Text(
                               "2. 눈을 촬영한 사진인지, 피부를 촬영한 사진인지 확인합니다.",
                               style: TextStyle(
                                 fontSize: 20,
@@ -186,8 +196,10 @@ class _SelectImageState extends State<SelectImage> {
                         ),
                         Column(
                           children: [
-                            Expanded(child: Text("그림")),
-                            Text(
+                            Expanded(
+                              child: Image.asset('assets/guides/guide_3_2.jpg'),
+                            ),
+                            const Text(
                               "3. 의심되는 질병을 높은 순서로 보여줍니다.",
                               style: TextStyle(
                                 fontSize: 20,
