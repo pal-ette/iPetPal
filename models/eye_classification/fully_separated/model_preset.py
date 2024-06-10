@@ -470,3 +470,56 @@ class VisionTransformerSkin4class(model_preset):
 
     def batch_size(self):
         return 24
+
+
+class Levit128sSkin4Class(model_preset):
+
+    def model_name(self):
+        return "levit_128s.fb_dist_in1k"
+
+    def data_transform(self):
+        return Compose(
+            [
+                ToTensor(),
+            ]
+        )
+
+    def train_transform(self):
+        return Compose(
+            [
+                Resize((320, 320)),
+                RandomCrop((224, 224)),
+                RandomRotation((-180, 180)),
+                RandomHorizontalFlip(),
+                RandomVerticalFlip(),
+                ColorJitter(
+                    brightness=0.8,
+                    contrast=0.8,
+                ),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+                RandomErasing(),
+            ]
+        )
+
+    def valid_transform(self):
+        return Compose(
+            [
+                Resize((224, 224)),
+                Normalize(
+                    mean=[0.5, 0.5, 0.5],
+                    std=[0.5, 0.5, 0.5],
+                ),
+            ]
+        )
+
+    def get_filename(self):
+        return "levit128s_skin_4_class"
+
+    def dataset_path(self):
+        return "D:\\CVProject\\피부"
+
+    def batch_size(self):
+        return 24
