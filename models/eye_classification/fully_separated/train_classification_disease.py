@@ -17,7 +17,7 @@ import model_preset as mp
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model_preset = mp.VisionTransformerSkin4class()
+    model_preset = mp.Levit128sSkin4Class()
 
     batch_size = model_preset.batch_size()
     base_path = model_preset.dataset_path()
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     model = model.to(device)
 
-    if True:
+    if False:
         dict_file = os.path.join(model_path, f"{model_filename}.pt")
         pkl_file = os.path.join(model_path, f"{model_filename}.pickle")
 
