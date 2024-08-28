@@ -128,7 +128,7 @@ class _InferenceState extends State<InferenceServerScreen> {
 
     _inference().then((target) {
       TritonClient.inference(
-        "https://nvidia.edens.one/v2",
+        "https://api.pal-ette.org/v2",
         target.$1,
         target.$2,
       ).then((result) {
