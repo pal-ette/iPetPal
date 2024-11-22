@@ -1,2 +1,2 @@
 flet==0.24.1
-
+onnxruntime==1.20.1
